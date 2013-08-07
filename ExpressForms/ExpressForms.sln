@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressForms", "ExpressForms\ExpressForms.csproj", "{87EAB8EC-FC54-4EC5-9D0A-A2FAF3C2412B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressForms.Entities", "ExpressForms.Entities\ExpressForms.Entities.csproj", "{8449C09E-F089-4F43-B80C-1B8BED3C1758}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{E40D0EA4-C8A1-4845-9E0F-9A91D0671A83}"
+	ProjectSection(SolutionItems) = preProject
+		ExpressFormsExample.sql = ExpressFormsExample.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vision", "Vision", "{307C845B-EEDA-4CB1-A6AA-CEF04E3030B4}"
+	ProjectSection(SolutionItems) = preProject
+		Roadmap.txt = Roadmap.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{962D34C4-6AA2-412B-A60C-6CC42BACB5F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressForms.Extensions.Ace", "ExpressForms.Extensions.Ace\ExpressForms.Extensions.Ace.csproj", "{70708750-F169-4C7B-A503-19D7F8CF8803}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressFormsExample", "ExpressFormsExample\ExpressFormsExample.csproj", "{F22994BA-4ADA-40FB-94EA-C983C6401091}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{87EAB8EC-FC54-4EC5-9D0A-A2FAF3C2412B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87EAB8EC-FC54-4EC5-9D0A-A2FAF3C2412B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87EAB8EC-FC54-4EC5-9D0A-A2FAF3C2412B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87EAB8EC-FC54-4EC5-9D0A-A2FAF3C2412B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8449C09E-F089-4F43-B80C-1B8BED3C1758}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8449C09E-F089-4F43-B80C-1B8BED3C1758}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8449C09E-F089-4F43-B80C-1B8BED3C1758}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8449C09E-F089-4F43-B80C-1B8BED3C1758}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70708750-F169-4C7B-A503-19D7F8CF8803}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70708750-F169-4C7B-A503-19D7F8CF8803}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70708750-F169-4C7B-A503-19D7F8CF8803}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70708750-F169-4C7B-A503-19D7F8CF8803}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F22994BA-4ADA-40FB-94EA-C983C6401091}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F22994BA-4ADA-40FB-94EA-C983C6401091}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F22994BA-4ADA-40FB-94EA-C983C6401091}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F22994BA-4ADA-40FB-94EA-C983C6401091}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

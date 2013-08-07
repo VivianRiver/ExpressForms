@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>        
+        <title>Express Forms Sample Application</title>                        
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/ExpressForms")
+        @Scripts.Render("~/scripts/ace/ace.js")
+        <style type="text/css">
+            textarea
+            {
+             width: 500px;
+             height: 200px;   
+            }
+        </style>
+    </head>
+   <body>  
+        <p>
+            @Html.ActionLink("Home", "Index", "Home")
+        </p>
+         
+        @RenderBody()        
+        
+        @RenderSection("scripts", required: false)
+    </body>
+</html>

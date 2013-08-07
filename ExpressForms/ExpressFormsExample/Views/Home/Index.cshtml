@@ -1,0 +1,232 @@
+﻿<p>
+    @Html.ActionLink("Engineer0", "Index", "Engineer0")
+    <br />
+    Engineer0 provides a controller for the Engineer table with no customization what-so-ever.  The code for the controller looks like this:
+    <pre>    public class Engineer0Controller : BaseController&lt;Engineer&gt;
+    {        
+    }</pre>
+    It doesn't look that awesome, but it's not too shabby for the amount of work that went into the above controller.  Please take note of the fact
+    that when no views are specified, ExpressForms will use ExpressFormsIndex.cshtml and ExpressFormsEditor.cshtml by default.
+</p>
+
+<hr />
+
+<p>
+    @Html.ActionLink("Engineer1", "Index", "Engineer1")
+    <br />
+    Engineer1 provides a little bit of customization.  Here, we've specified the heading for the page, as well as some of the column headings.
+    Note that we didn't have to specify all of them.
+    <pre>    public class Engineer1Controller : BaseController&lt;Engineer&gt;
+    {
+        public Engineer1Controller()
+            : base()
+        {
+            IndexTitle = "Engineer Roster";
+
+            CustomPropertyNames.Add("FavoriteLanguage", "Favorite Language");
+            CustomPropertyNames.Add("CodeSnippet", "Favorite Code Snippet");
+            CustomPropertyNames.Add("Available", "Available For Hire");
+        }
+    }</pre>
+</p>
+
+<hr />
+
+<p>
+    @Html.ActionLink("Engineer2", "Index", "Engineer2")
+    <br />
+    No doubt you've been wondering how useful this Express Forms framework can be with just textboxes and checkboxes.
+    Engineer2 here shows how the form may be customized, in this case, with a textarea.  Once again, we can specify
+    a custom input type for as many or as few fields as we like.
+    
+    <pre>    public class Engineer2Controller : BaseController&lt;Engineer&gt;
+    {
+        public Engineer2Controller()
+            : base()
+        {
+            IndexTitle = "Engineer Roster";
+
+            CustomPropertyNames.Add("FavoriteLanguage", "Favorite Language");
+            CustomPropertyNames.Add("CodeSnippet", "Favorite Code Snippet");
+            CustomPropertyNames.Add("Available", "Available For Hire");
+
+            CustomEditorInputs.Add("CodeSnippet", new ExpressForms.Inputs.ExpressFormsTextArea()
+            {
+                FormName = this.FormName,
+                InputName = "CodeSnippet",                
+            });
+        }
+    }</pre>
+</p>
+
+<hr />
+
+<p>
+    @Html.ActionLink("Engineer3", "Index", "Engineer3")
+    <br />
+    In the Engineer2 example, you saw how Express Forms can work with customized forms to provide users with the appropriate
+    widgets for inputting data.  There's no doubt you have also noticed that the line breaks are still missing from the code
+    samples on the index page.  That's because by default, Express Forms will HTML-encode the contents of each field, and
+    the browser will "collapse" the whitespace.
+
+    <br /><br />
+
+    Never fear!  Express Forms provides you with a way to customize the way the data is displayed.  You can provide
+    any function you like to describe what HTML should be put in each field of the table for each record.
+    
+    <pre>    public class Engineer3Controller : BaseController&lt;Engineer&gt;
+    {
+        public Engineer3Controller()
+            : base()
+        {
+            IndexTitle = "Engineer Roster";
+
+            CustomPropertyNames.Add("FavoriteLanguage", "Favorite Language");
+            CustomPropertyNames.Add("CodeSnippet", "Favorite Code Snippet");
+            CustomPropertyNames.Add("Available", "Available For Hire");
+
+            CustomEditorInputs.Add("CodeSnippet", new ExpressForms.Inputs.ExpressFormsTextArea()
+            {
+                FormName = this.FormName,
+                InputName = "CodeSnippet",                
+            });
+
+            CustomPropertyDisplay.Add(&quot;Available&quot;, (record) =&gt;
+                {
+                    Engineer engineer = (Engineer)record;
+                    string checkHtml = &quot;&lt;img src=&#39;{0}&#39; alt=&#39;check&#39; /&gt;&quot;.Replace(&quot;{0}&quot;, Url.Content(&quot;~/Images/check.png&quot;));
+                    return engineer.Available ? checkHtml : &quot;&quot;;
+                }
+            );
+            string codeFormat = &quot;&lt;pre&gt;{0}&lt;/pre&gt;&quot;;
+            CustomPropertyDisplay.Add(&quot;CodeSnippet&quot;, (record) =&gt;
+                {
+                    Engineer engineer = (Engineer)record;
+                    return string.Format(codeFormat, engineer.CodeSnippet.Replace(&quot;&amp;&quot;, &quot;&amp;amp;&quot;).Replace(&quot;&lt;&quot;, &quot;&amp;lt&quot;).Replace(&quot;&gt;&quot;, &quot;&amp;gt;&quot;));
+                }
+            );
+        }
+    }</pre>
+</p>
+
+<p>
+    @Html.ActionLink("Engineer4", "Index", "Engineer4")
+    <br />
+    In the Engineer3 example, you saw how to take complete control over how the data is formatted in the table.
+    <br /><br />
+    The Engineer4 example shows how ExpressForms is designed for extensibility.
+    You can design *any* type of input you can describe to the framework by providing .net code to write the control in HTML as well as Javascript code to read it.
+    In this example, I will use a small extension I wrote to use the "Ace" text editor. <a href='http://ace.c9.io/'>Ace Web Site</a>            
+    
+    <pre>    public class Engineer4Controller : BaseController&lt;Engineer&gt;
+    {
+        public Engineer4Controller()
+            : base()
+        {
+            IndexTitle = "Engineer Roster";
+
+            CustomPropertyNames.Add("FavoriteLanguage", "Favorite Language");
+            CustomPropertyNames.Add("CodeSnippet", "Favorite Code Snippet");
+            CustomPropertyNames.Add("Available", "Available For Hire");
+
+            CustomEditorInputs.Add("CodeSnippet", new ExpressForms.Extensions.Ace.ExpressFormsAceInput()
+            {
+                FormName = this.FormName,
+                InputName = "CodeSnippet",                
+            });
+
+            CustomPropertyDisplay.Add(&quot;Available&quot;, (record) =&gt;
+                {
+                    Engineer engineer = (Engineer)record;
+                    string checkHtml = &quot;&lt;img src=&#39;{0}&#39; alt=&#39;check&#39; /&gt;&quot;.Replace(&quot;{0}&quot;, Url.Content(&quot;~/Images/check.png&quot;));
+                    return engineer.Available ? checkHtml : &quot;&quot;;
+                }
+            );
+            string codeFormat = &quot;&lt;pre&gt;{0}&lt;/pre&gt;&quot;;
+            CustomPropertyDisplay.Add(&quot;CodeSnippet&quot;, (record) =&gt;
+                {
+                    Engineer engineer = (Engineer)record;
+                    return string.Format(codeFormat, engineer.CodeSnippet.Replace(&quot;&amp;&quot;, &quot;&amp;amp;&quot;).Replace(&quot;&lt;&quot;, &quot;&amp;lt&quot;).Replace(&quot;&gt;&quot;, &quot;&amp;gt;&quot;));
+                }
+            );
+        }
+    }</pre>
+</p>
+
+<p>
+    @Html.ActionLink("Engineer5", "Index", "Engineer5")
+    <br />
+    Those of you familiar with the Ace text editor know that it provides syntax highlighting for various languages.  You'd probably like to set up the "Favorite Language"
+    input so that Ace will use syntax highlighting for the selected language.  In the Engineer5 example, I show how this is done.
+    <br /><br />
+    First, it is necessary to create a custom input with a dropdown list for the Favorite Language input.  That is straightforward.
+    <br /><br />
+    What is a bit trickier is linking the two inputs together.  Some Javascript is required.  If you read the code to the Ace extension, you may have noticed that 
+    the name of the field is used as the id attribute on the input.  Bearing this in mind, you can write the following Javascript:
+
+    <pre>    $(document).ready(function () {
+        var $selectLanguage;
+        $selectLanguage = $(&quot;#FavoriteLanguage&quot;);
+        $selectLanguage.change(function () {
+            var language, aceMode, editor;
+            language = $selectLanguage.val();
+            aceMode = &#39;ace/mode/&#39; + language;
+            editor = ace.edit(&#39;CodeSnippet&#39;);
+            editor.getSession().setMode(aceMode);
+        });
+        $selectLanguage.change();
+    });
+</pre>
+    <br /><br />
+    You'll ask, where do I put the Javascript; there's no view to use!  Actually, there is a view, but it is shared between different controllers that use Express Forms. (See Engineer0 notes)
+    Create a new view and call it Engineer5Editor.  Create a folder called Engineer5 in the "Views" directory and save it there.  Copy the contents of the ExpressFormsEditor.cshtml
+    file from the shared views folder to Engineer5Editor.cshtml and add in the above Javascript code.  Finally, add <i>EditorViewName = "Engineer5Editor";</i> to the code.
+
+    <pre>public class Engineer5Controller : BaseController&lt;Engineer&gt;
+    {
+        public Engineer5Controller()
+            : base()
+        {
+            EditorViewName = &quot;Engineer5Editor&quot;;
+            IndexTitle = &quot;Engineer Roster&quot;;
+
+            CustomPropertyNames.Add(&quot;FavoriteLanguage&quot;, &quot;Favorite Language&quot;);
+            CustomPropertyNames.Add(&quot;CodeSnippet&quot;, &quot;Favorite Code Snippet&quot;);
+            CustomPropertyNames.Add(&quot;Available&quot;, &quot;Available For Hire&quot;);
+
+            CustomEditorInputs.Add(&quot;FavoriteLanguage&quot;, new ExpressForms.Inputs.ExpressFormsDropDownList()
+            {
+                FormName = this.FormName,
+                InputName = &quot;FavoriteLanguage&quot;,
+                SelectListItems = new SelectListItem[]
+                {
+                    new SelectListItem() { Value=&quot;csharp&quot;, Text=&quot;C#&quot;},
+                    new SelectListItem() { Value=&quot;javascript&quot;, Text=&quot;Javascript&quot;},
+                    new SelectListItem() { Value=&quot;html&quot;, Text=&quot;HTML&quot;},
+                    new SelectListItem() { Value=&quot;xml&quot;, Text=&quot;XML&quot;}
+                }
+            });
+            CustomEditorInputs.Add(&quot;CodeSnippet&quot;, new ExpressForms.Extensions.Ace.ExpressFormsAceInput()
+            {
+                FormName = this.FormName,
+                InputName = &quot;CodeSnippet&quot;,
+            });
+
+            CustomPropertyDisplay.Add(&quot;Available&quot;, (record) =&gt;
+            {
+                Engineer engineer = (Engineer)record;
+                string checkHtml = &quot;&lt;img src=&#39;{0}&#39; alt=&#39;check&#39; /&gt;&quot;.Replace(&quot;{0}&quot;, Url.Content(&quot;~/Images/check.png&quot;));
+                return engineer.Available ? checkHtml : &quot;&quot;;
+            }
+            );
+            string codeFormat = &quot;&lt;pre&gt;{0}&lt;/pre&gt;&quot;;
+            CustomPropertyDisplay.Add(&quot;CodeSnippet&quot;, (record) =&gt;
+            {
+                Engineer engineer = (Engineer)record;
+                return string.Format(codeFormat, engineer.CodeSnippet.Replace(&quot;&amp;&quot;, &quot;&amp;amp;&quot;).Replace(&quot;&lt;&quot;, &quot;&amp;lt&quot;).Replace(&quot;&gt;&quot;, &quot;&amp;gt;&quot;));
+            }
+            );
+        }
+    }</pre>
+</p>
+

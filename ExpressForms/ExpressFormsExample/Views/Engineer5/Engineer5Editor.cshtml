@@ -1,0 +1,47 @@
+﻿ @using ExpressForms.Buttons
+@using ExpressForms.Inputs
+@using System.Data.Objects.DataClasses
+@model ExpressForms.ExpressFormsEditorModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    @* Write out the form inputs *@
+    @foreach (var kvp in Model.Inputs)
+    {
+        <div>
+            @Html.EfLabel(kvp.Value.InputName, kvp.Value.InputDisplayName)
+            <br />
+            @Html.Raw(kvp.Value.WriteInput(Html, new {}))
+        </div>
+    }
+</div>
+
+<div>        
+    @* Write out the form buttons *@
+    @foreach (ExpressFormsButton button in Model.Buttons)
+    {                    
+        @Html.WriteButton(button, new { })        
+    }    
+</div>
+
+<div>
+    @Html.ActionLink("Go Back", "Index")
+</div>
+
+<script>
+    $(document).ready(function () {        
+        var $selectLanguage;
+        $selectLanguage = $("#FavoriteLanguage");
+        $selectLanguage.change(function () {
+            var language, aceMode, editor;
+            language = $selectLanguage.val();
+            aceMode = 'ace/mode/' + language;
+            editor = ace.edit('CodeSnippet');
+            editor.getSession().setMode(aceMode);
+        });
+        $selectLanguage.change();
+    });
+    </script>
