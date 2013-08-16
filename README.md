@@ -2,8 +2,28 @@ ExpressForms
 ============
 
 Express Forms Web Development Framework
+For Fast and Easy Creation of CRUD Pages
 
 ============
+
+ExpressForms-0.6.0, released August 16, 2013, adds in the first AJAX support to ExpressForms.
+After all, ExpressForms would be only a simple toy without the ability to have an AJAX framework
+page through large datasets.
+
+Right now, I've written an extension that allows ExpressForms to work with jQuery DataTables
+and provided some example pages.  What I find exciting about this release is that filtering,
+sorting, and pagination are all automatically provided.  In a future version, I want to provide
+the ability for a developer to override the filtering and sorting methods for each column in the
+same way that ExpressForms provides the ability to specify custom column headers and data display.
+Some of this code uses reflection, so that's one opportunity for improvement.
+
+My plan is that the next release of ExpressForms should provide for easy switching between different
+AJAX frameworks.
+
+Unfortunately, the limitation that tables must have a 32-bit integer column called "Id" for the
+primary key remains for now.
+
+***
 
 ExpressForms-0.5, released August 7, 2013, is the first publicly released version of Express Forms.
 It is realeased under the MIT license.  You are encouraged to contribute to it if you like.

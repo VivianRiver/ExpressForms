@@ -175,7 +175,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\NameAndCity0Controller.cs" />
     <Compile Include="Controllers\NameAndCity1Controller.cs" />
-    <Compile Include="Controllers\NumberSequenceController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
