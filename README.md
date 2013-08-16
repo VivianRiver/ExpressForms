@@ -23,6 +23,8 @@ AJAX frameworks.
 Unfortunately, the limitation that tables must have a 32-bit integer column called "Id" for the
 primary key remains for now.
 
+Also, note that some examples are hosted here: http://danielsadventure.info/expressformsexample-0.6.0/
+
 ***
 
 ExpressForms-0.5, released August 7, 2013, is the first publicly released version of Express Forms.
