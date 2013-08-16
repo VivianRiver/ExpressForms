@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using ExpressForms.Buttons;
 using ExpressForms.Inputs;
+using ExpressForms.IndexAjaxExtension;
 using System.Reflection;
 
 namespace ExpressForms
@@ -17,10 +18,11 @@ namespace ExpressForms
         public ExpressFormsController() 
         {
             // Set default values to properties
+            // I think that these should all be wrapped inside their respective properties so that we don't have to worry about the base constructor being invoked.
             IndexViewName = "ExpressFormsIndex";
             EditorViewName = "ExpressFormsEditor";
             CustomPropertyNames = new Dictionary<string, string>();
-            CustomPropertyDisplay = new Dictionary<string, Func<dynamic, string>>();
+            CustomPropertyDisplay = new Dictionary<string, Func<T, string>>();
             CustomEditorInputs = new Dictionary<string, ExpressFormsInput>();
             IgnoredPropertyNames = new string[] { };            
         }
@@ -31,15 +33,7 @@ namespace ExpressForms
         }
 
         #region properties and functions that are used to customize the appearance and behavior of forms
-        protected string FormName { get { return typeof(T).Name; } }
-        
-        protected virtual ExpressFormsButton[] IndexButtons
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        protected string FormName { get { return typeof(T).Name; } }                
         /// <summary>
         /// A virtual helper function that is meant to be used to get the buttons to display on the editor form.
         /// May be overridden in a derived class to change what buttons appear.
@@ -145,14 +139,41 @@ namespace ExpressForms
             // Otherwise, return null.
             else            
                 return null;
-        }
-
+        }        
         protected Dictionary<string, ExpressFormsInput> CustomEditorInputs { get; set; }
-
+        
         protected string IndexTitle { get; set; }        
         protected Dictionary<string, string> CustomPropertyNames { get; set; }
         protected IEnumerable<string> IgnoredPropertyNames { get; set; }
-        protected Dictionary<string, Func<dynamic, string>> CustomPropertyDisplay { get; set; }
+        protected Dictionary<string, Func<T, string>> CustomPropertyDisplay { get; set; }
+        private ExpressFormsButton[] _indexButtons;
+        protected ExpressFormsButton[] IndexButtons
+        {
+            get
+            {
+                // By default, the Index page shows an [Edit] button and a [Remove] button for each row.
+                return _indexButtons ??                
+                new ExpressForms.Buttons.ExpressFormsButton[]
+                {
+                    new ExpressForms.Buttons.ExpressFormsEditButton() {
+                        Text = "Edit",
+                        LinkUrl = Url.Action("Editor"),            
+                    },    
+                    new ExpressForms.Buttons.ExpressFormsModifyDataButton() {
+                        Text = "Remove",
+                        PostUrl = Url.Action("Postback"),
+                        TableIdForDeletion = typeof(T).Name,
+                        ActionType = ExpressForms.Buttons.ExpressFormsModifyDataButton.ActionTypeEnum.Delete,
+                        PostType = ExpressForms.Buttons.ExpressFormsModifyDataButton.PostTypeEnum.Ajax
+                    }
+                };   
+            }
+            set
+            {
+                _indexButtons = value;
+            }
+        }
+        protected ExpressFormsIndexAjaxExtension IndexAjaxExtension { get; set; }
 
         protected string IndexViewName { get; set; }
         protected string EditorViewName { get; set; }
@@ -166,14 +187,25 @@ namespace ExpressForms
         /// <returns></returns>
         public virtual ActionResult Index()
         {
-            ExpressFormsIndexViewModel model = new ExpressFormsIndexViewModel()
-            {
-                RecordType = typeof(T),
-                Title = IndexTitle == null ? this.GetType().Name : IndexTitle,
-                CustomIndexHeaders = CustomPropertyNames,
-                CustomPropertyDisplay = CustomPropertyDisplay,
+            string[] propertyNames = GetPropertyColumnNames();
 
-                Records = Exchange.Get().ToArray()
+            ExpressFormsIndexHeader indexHeader = new ExpressFormsIndexHeader();
+            indexHeader.Initialize(propertyNames, IndexButtons, ControllerContext);
+
+            IEnumerable<ExpressFormsIndexRecord> indexRecords = Exchange.Get().ToList()
+                .Select(r =>
+                {
+                    ExpressFormsIndexRecord indexRecord = new ExpressFormsIndexRecord();
+                    indexRecord.Initialize<T>(r, "Id", propertyNames, IndexButtons, CustomPropertyDisplay, ControllerContext);
+                    return indexRecord;
+                });
+
+            ExpressFormsIndexViewModel model = new ExpressFormsIndexViewModel()
+            {                
+                Title = IndexTitle == null ? typeof(T).Name : IndexTitle,
+                GetAjaxUrl = Url.Action("GetAjax"),
+                IndexHeader = indexHeader,
+                IndexRecords = indexRecords
             };
 
             return View(IndexViewName, model);
@@ -284,5 +316,65 @@ namespace ExpressForms
         }
 
         #endregion methods that modify the data when called
+
+        #region Ajax methods (require AJAX extension)
+        public virtual ActionResult GetAjax()
+        {            
+            HtmlHelper helper = new HtmlHelper(new ViewContext(ControllerContext, new WebFormView(ControllerContext, "omg"), new ViewDataDictionary(), new TempDataDictionary(), new System.IO.StringWriter()), new ViewPage());
+
+            // Here, we need to use the property names from the class definition, not the column names that we display.
+            string[] propertyNames = typeof(T).GetProperties()
+                .Where(p => !IgnoredPropertyNames.Contains(p.Name))
+                .Select(p => p.Name)
+                .ToArray();
+
+            // This is expected to set up the filter and pagination (and the sorting, once that is set up)
+            IndexAjaxExtension.Initialize(ControllerContext, propertyNames);
+
+            int totalRecordCount = Exchange.Get().Count();
+            IEnumerable<T> filteredRecords = IndexAjaxExtension.RecordFilter.GetFilteredRecords<T>(Exchange.Get());
+            int filteredRecordCount = IndexAjaxExtension.RecordFilter.GetFilteredRecords<T>(Exchange.Get()).Count();
+            IEnumerable<T> sortedRecords = IndexAjaxExtension.RecordSorting.GetSortedRecords<T>(filteredRecords);
+            IEnumerable<T> pageOfRecords = IndexAjaxExtension.RecordPagination.GetPageOfRecords<T>(sortedRecords);
+            
+            IEnumerable<ExpressFormsIndexRecord> indexRecords =
+                pageOfRecords.Select(r =>
+                {
+                    ExpressFormsIndexRecord indexRecord = new ExpressFormsIndexRecord();
+                    indexRecord.Initialize<T>(r, "Id", propertyNames, IndexButtons, CustomPropertyDisplay, ControllerContext);
+                    return indexRecord;
+                });
+
+            var retval = new
+            {
+                iTotalRecords = totalRecordCount, // number of records in database before filtering
+                iTotalDisplayRecords = filteredRecordCount, // number of records that match filter, not just on this page.
+                aaData = indexRecords.Select(x => x.FieldHtml)
+            };
+            return Json(retval, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Get an array containing the property names to display at the top of the columns
+        /// The function will check the names to not display and the names with a custom column header
+        /// </summary>
+        /// <returns></returns>
+        protected string[] GetPropertyColumnNames()
+        {
+            string[] propertyNames = typeof(T).GetProperties()
+                .Where(p => !IgnoredPropertyNames.Contains(p.Name))
+                .Select(p => GetPropertyColumnName(p))
+                .ToArray();
+            return propertyNames;
+        }
+
+        private string GetPropertyColumnName(PropertyInfo property)
+        {
+            string name = property.Name;
+            string columnName = CustomPropertyNames.Keys.Contains(name) ? CustomPropertyNames[name] : property.Name;
+            return columnName;
+        }
     }
 }

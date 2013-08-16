@@ -4,9 +4,11 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ExpressFormsExampleModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+    <Schema Namespace="ExpressFormsExampleModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
         <EntityContainer Name="ExpressFormsExampleModelStoreContainer">
           <EntitySet Name="Engineer" EntityType="ExpressFormsExampleModel.Store.Engineer" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="NameAndCity" EntityType="ExpressFormsExampleModel.Store.NameAndCity" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="NumberSequences" EntityType="ExpressFormsExampleModel.Store.NumberSequences" store:Type="Tables" Schema="dbo" />
         </EntityContainer>
         <EntityType Name="Engineer">
           <Key>
@@ -19,13 +21,33 @@
           <Property Name="FavoriteLanguage" Type="varchar" MaxLength="100" />
           <Property Name="CodeSnippet" Type="varchar(max)" />
         </EntityType>
-      </Schema>
-    </edmx:StorageModels>
+        <EntityType Name="NameAndCity">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="First Name" Type="varchar(max)" />
+          <Property Name="Middle Name" Type="varchar(max)" />
+          <Property Name="Last Name" Type="varchar(max)" />
+          <Property Name="City" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="NumberSequences">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Prime" Type="int" Nullable="false" />
+          <Property Name="Composite" Type="int" Nullable="false" />
+          <Property Name="Remark" Type="varchar(max)" />
+        </EntityType>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ExpressFormsExampleModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
         <EntityContainer Name="ExpressFormsExampleEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Engineers" EntityType="ExpressFormsExampleModel.Engineer" />
+          <EntitySet Name="NumberSequences" EntityType="ExpressFormsExampleModel.NumberSequence" />
+          <EntitySet Name="NameAndCities" EntityType="ExpressFormsExampleModel.NameAndCity" />
         </EntityContainer>
         <EntityType Name="Engineer">
           <Key>
@@ -37,6 +59,25 @@
           <Property Name="Available" Type="Boolean" Nullable="false" />
           <Property Name="FavoriteLanguage" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
           <Property Name="CodeSnippet" Type="String" MaxLength="Max" Unicode="false" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="NumberSequence">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="Prime" Nullable="false" />
+          <Property Type="Int32" Name="Composite" Nullable="false" />
+          <Property Type="String" Name="Remark" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="NameAndCity">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="First_Name" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Middle_Name" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Last_Name" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="City" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -53,6 +94,27 @@
                 <ScalarProperty Name="Available" ColumnName="Available" />
                 <ScalarProperty Name="FavoriteLanguage" ColumnName="FavoriteLanguage" />
                 <ScalarProperty Name="CodeSnippet" ColumnName="CodeSnippet" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NumberSequences">
+            <EntityTypeMapping TypeName="ExpressFormsExampleModel.NumberSequence">
+              <MappingFragment StoreEntitySet="NumberSequences">
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="Composite" ColumnName="Composite" />
+                <ScalarProperty Name="Prime" ColumnName="Prime" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NameAndCities">
+            <EntityTypeMapping TypeName="ExpressFormsExampleModel.NameAndCity">
+              <MappingFragment StoreEntitySet="NameAndCity">
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Last_Name" ColumnName="Last Name" />
+                <ScalarProperty Name="Middle_Name" ColumnName="Middle Name" />
+                <ScalarProperty Name="First_Name" ColumnName="First Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -78,6 +140,8 @@
     <Diagrams>
       <Diagram Name="Model1">
         <EntityTypeShape EntityType="ExpressFormsExampleModel.Engineer" Width="1.5" PointX="0.75" PointY="0.75" Height="2.172587890625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ExpressFormsExampleModel.NumberSequence" Width="1.5" PointX="3.375" PointY="0.75" Height="1.5956835937499996" />
+        <EntityTypeShape EntityType="ExpressFormsExampleModel.NameAndCity" Width="1.5" PointX="0.75" PointY="3.75" Height="1.9802864583333322" />
       </Diagram>
     </Diagrams>
   </Designer>

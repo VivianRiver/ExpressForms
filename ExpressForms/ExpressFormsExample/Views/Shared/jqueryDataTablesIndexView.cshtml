@@ -1,0 +1,31 @@
+﻿@using System.Data.Objects.DataClasses
+@using System.Reflection
+@model ExpressForms.ExpressFormsIndexViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>
+    @Model.Title
+</h1>
+
+<p>
+    @Html.ActionLink("Add New", "Editor")
+</p>
+
+@Html.WriteStaticTable(Model.Title, Model.IndexHeader, new ExpressForms.ExpressFormsIndexRecord[]{} /* print no records until they are fetched using ajax */)
+
+@Html.Hidden("hdnGetAjaxUrl", Model.GetAjaxUrl)
+
+@Scripts.Render("~/Scripts/jquery.dataTables/jquery.dataTables.js")
+<script>
+    $('table').dataTable({
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": $('#hdnGetAjaxUrl').val(),        
+        "fnDrawCallback": function () {            
+            window.ef.resetButtonHandlers();
+        }
+    });
+</script>

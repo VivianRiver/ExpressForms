@@ -80,6 +80,38 @@ namespace ExpressFormsExample
             }
         }
         private ObjectSet<Engineer> _Engineers;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<NumberSequence> NumberSequences
+        {
+            get
+            {
+                if ((_NumberSequences == null))
+                {
+                    _NumberSequences = base.CreateObjectSet<NumberSequence>("NumberSequences");
+                }
+                return _NumberSequences;
+            }
+        }
+        private ObjectSet<NumberSequence> _NumberSequences;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<NameAndCity> NameAndCities
+        {
+            get
+            {
+                if ((_NameAndCities == null))
+                {
+                    _NameAndCities = base.CreateObjectSet<NameAndCity>("NameAndCities");
+                }
+                return _NameAndCities;
+            }
+        }
+        private ObjectSet<NameAndCity> _NameAndCities;
 
         #endregion
 
@@ -91,6 +123,22 @@ namespace ExpressFormsExample
         public void AddToEngineers(Engineer engineer)
         {
             base.AddObject("Engineers", engineer);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the NumberSequences EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToNumberSequences(NumberSequence numberSequence)
+        {
+            base.AddObject("NumberSequences", numberSequence);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the NameAndCities EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToNameAndCities(NameAndCity nameAndCity)
+        {
+            base.AddObject("NameAndCities", nameAndCity);
         }
 
         #endregion
@@ -274,6 +322,292 @@ namespace ExpressFormsExample
         private global::System.String _CodeSnippet;
         partial void OnCodeSnippetChanging(global::System.String value);
         partial void OnCodeSnippetChanged();
+
+        #endregion
+
+    
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="ExpressFormsExampleModel", Name="NameAndCity")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class NameAndCity : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new NameAndCity object.
+        /// </summary>
+        /// <param name="id">Initial value of the Id property.</param>
+        public static NameAndCity CreateNameAndCity(global::System.Int32 id)
+        {
+            NameAndCity nameAndCity = new NameAndCity();
+            nameAndCity.Id = id;
+            return nameAndCity;
+        }
+
+        #endregion
+
+        #region Primitive Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 Id
+        {
+            get
+            {
+                return _Id;
+            }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    ReportPropertyChanging("Id");
+                    _Id = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
+        private global::System.Int32 _Id;
+        partial void OnIdChanging(global::System.Int32 value);
+        partial void OnIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String First_Name
+        {
+            get
+            {
+                return _First_Name;
+            }
+            set
+            {
+                OnFirst_NameChanging(value);
+                ReportPropertyChanging("First_Name");
+                _First_Name = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("First_Name");
+                OnFirst_NameChanged();
+            }
+        }
+        private global::System.String _First_Name;
+        partial void OnFirst_NameChanging(global::System.String value);
+        partial void OnFirst_NameChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Middle_Name
+        {
+            get
+            {
+                return _Middle_Name;
+            }
+            set
+            {
+                OnMiddle_NameChanging(value);
+                ReportPropertyChanging("Middle_Name");
+                _Middle_Name = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("Middle_Name");
+                OnMiddle_NameChanged();
+            }
+        }
+        private global::System.String _Middle_Name;
+        partial void OnMiddle_NameChanging(global::System.String value);
+        partial void OnMiddle_NameChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Last_Name
+        {
+            get
+            {
+                return _Last_Name;
+            }
+            set
+            {
+                OnLast_NameChanging(value);
+                ReportPropertyChanging("Last_Name");
+                _Last_Name = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("Last_Name");
+                OnLast_NameChanged();
+            }
+        }
+        private global::System.String _Last_Name;
+        partial void OnLast_NameChanging(global::System.String value);
+        partial void OnLast_NameChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String City
+        {
+            get
+            {
+                return _City;
+            }
+            set
+            {
+                OnCityChanging(value);
+                ReportPropertyChanging("City");
+                _City = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("City");
+                OnCityChanged();
+            }
+        }
+        private global::System.String _City;
+        partial void OnCityChanging(global::System.String value);
+        partial void OnCityChanged();
+
+        #endregion
+
+    
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="ExpressFormsExampleModel", Name="NumberSequence")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class NumberSequence : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new NumberSequence object.
+        /// </summary>
+        /// <param name="id">Initial value of the Id property.</param>
+        /// <param name="prime">Initial value of the Prime property.</param>
+        /// <param name="composite">Initial value of the Composite property.</param>
+        public static NumberSequence CreateNumberSequence(global::System.Int32 id, global::System.Int32 prime, global::System.Int32 composite)
+        {
+            NumberSequence numberSequence = new NumberSequence();
+            numberSequence.Id = id;
+            numberSequence.Prime = prime;
+            numberSequence.Composite = composite;
+            return numberSequence;
+        }
+
+        #endregion
+
+        #region Primitive Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 Id
+        {
+            get
+            {
+                return _Id;
+            }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    ReportPropertyChanging("Id");
+                    _Id = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
+        private global::System.Int32 _Id;
+        partial void OnIdChanging(global::System.Int32 value);
+        partial void OnIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 Prime
+        {
+            get
+            {
+                return _Prime;
+            }
+            set
+            {
+                OnPrimeChanging(value);
+                ReportPropertyChanging("Prime");
+                _Prime = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("Prime");
+                OnPrimeChanged();
+            }
+        }
+        private global::System.Int32 _Prime;
+        partial void OnPrimeChanging(global::System.Int32 value);
+        partial void OnPrimeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 Composite
+        {
+            get
+            {
+                return _Composite;
+            }
+            set
+            {
+                OnCompositeChanging(value);
+                ReportPropertyChanging("Composite");
+                _Composite = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("Composite");
+                OnCompositeChanged();
+            }
+        }
+        private global::System.Int32 _Composite;
+        partial void OnCompositeChanging(global::System.Int32 value);
+        partial void OnCompositeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Remark
+        {
+            get
+            {
+                return _Remark;
+            }
+            set
+            {
+                OnRemarkChanging(value);
+                ReportPropertyChanging("Remark");
+                _Remark = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("Remark");
+                OnRemarkChanged();
+            }
+        }
+        private global::System.String _Remark;
+        partial void OnRemarkChanging(global::System.String value);
+        partial void OnRemarkChanged();
 
         #endregion
 

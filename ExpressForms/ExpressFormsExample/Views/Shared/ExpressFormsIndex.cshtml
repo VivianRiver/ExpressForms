@@ -14,28 +14,4 @@
     @Html.ActionLink("Add New", "Editor")
 </p>
 
-@{
-    string tableId = Model.Title;
-    
-    // This declares an array of buttons that will be passed to the "WriteList" method.
-    // The buttons will be printed for each entity record.
-    
-    // TODO: This needs to be factored into the controller.
-    
-    ExpressForms.Buttons.ExpressFormsButton[] buttons = new ExpressForms.Buttons.ExpressFormsButton[]
-    {
-        new ExpressForms.Buttons.ExpressFormsEditButton() {
-            Text = "Edit",
-            LinkUrl = Url.Action("Editor"),            
-        },    
-        new ExpressForms.Buttons.ExpressFormsModifyDataButton() {
-            Text = "Remove",
-            PostUrl = Url.Action("Postback"),
-            TableIdForDeletion = tableId,
-            ActionType = ExpressForms.Buttons.ExpressFormsModifyDataButton.ActionTypeEnum.Delete,
-            PostType = ExpressForms.Buttons.ExpressFormsModifyDataButton.PostTypeEnum.Ajax
-        }
-    };              
-}
-
-@Html.WriteList(tableId, buttons, Model.Records, Model.CustomIndexHeaders, Model.CustomPropertyDisplay)
+@Html.WriteStaticTable(Model.Title, Model.IndexHeader, Model.IndexRecords)

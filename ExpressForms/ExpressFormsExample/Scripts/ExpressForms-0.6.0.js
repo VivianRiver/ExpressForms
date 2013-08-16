@@ -1,6 +1,6 @@
 ﻿// A journey of a thousand miles begins with the first step.
 
-// Express Forms v0.1
+// Express Forms v0.6
 // Requires jQuery
 
 (function () {
@@ -79,12 +79,22 @@
         return $element.attr('data-inputtype');
     }
 
+
+    function resetButtonHandlers() {
+        var x, button;
+        for (x in buttons) {
+            button = buttons[x];
+            $('.' + button.name)
+                .unbind('click')
+                .bind('click', button.clickHandler);
+        }
+    }
+
     function registerInputFormIO(io) {
         inputFormIos[io.name] = io;
     }
     function registerButton(button) {
         buttons[button.name] = button;
-        $(document).ready(function () { $('.' + button.name).click(button.clickHandler); });
     }
 
     ef = {
@@ -92,9 +102,11 @@
         registerInputFormIO: registerInputFormIO,
         registerButton: registerButton,
         readFromForm: readFromForm,
-        writeToForm: writeToForm
+        writeToForm: writeToForm,
+        resetButtonHandlers: resetButtonHandlers
     };
 
     window.ef = ef;
 
+    $(document).ready(resetButtonHandlers);
 })();

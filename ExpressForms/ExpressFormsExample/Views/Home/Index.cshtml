@@ -230,3 +230,64 @@
     }</pre>
 </p>
 
+<p>
+    At this point, you may think that this looks like a neat little toy.  After all, your database has millions upon millions of records and you wouldn't dream of showing all those records
+    at once.  Furthermore, what about filtering, sorting, and paging of data.
+</p>
+<p>
+    Express Forms does not provide for these features to be implemented in the controller methods that return the Index and Editor.  It does, however, provide a GetAjax method that will
+    return data to the browser.  As of now, GetAjax is the only method in ExpressForms that requires an extension to use.  This is because different libraries for displaying data will
+    have different logic for performing operations.  Here, I've provided an example for jQuery DataTables.  In the future, I intend to provide extensions for other libraries so that
+    they can easily be swapped in and out.
+</p>
+
+<p>
+    @Html.ActionLink("NameAndCity0", "Index", "NameAndCity0")
+    <br />
+    As with the Engineer example, I start with a simple example and then move on to more complex examples.
+    <br /><br />
+    In the example below, I've done only three critical things:
+    <ol>
+        <li>I've specified NameAndCity as the underlying entity class.</li>
+        <li>I've specified that I'm using the DataTables extension.</li>
+        <li>And also, I've specified that an appropriate view should be used for the Index.  (This view contains the Javascript and CSS references for jQuery DataTables.)
+        The view also tells the framework not to render any records until they are retrieved via AJAX.</li>
+    </ol>
+    <pre>    public class NameAndCity0Controller : BaseController&lt;NameAndCity&gt;
+        {
+            public NameAndCity0Controller()
+            {
+                IndexAjaxExtension = new ExpressFormsDataTablesIndexAjaxExtension();
+                IndexViewName = "jqueryDataTablesIndexView";
+            }
+        }</pre>
+</p>
+
+<p>
+    @Html.ActionLink("NameAndCity1", "Index", "NameAndCity1")
+    <br />
+    In the previous example, most features of the table work right away, such as filtering, sorting, and paging.  That's because the extension that I wrote has generic methods built in
+    that provide for these functions to be implemented across various data types such as integers and strings.
+    <br /><br />
+    Here, I've added a few simple commands to format the column headers and data.
+    <pre>    public class NameAndCity1Controller : BaseController&lt;NameAndCity&gt;
+    {
+           public NameAndCity1Controller()
+            : base()
+        {
+            IndexTitle = "Names And Cities";
+            IndexViewName = "jqueryDataTablesIndexView";            
+            IndexAjaxExtension = new ExpressFormsDataTablesIndexAjaxExtension();            
+            CustomPropertyNames = new Dictionary&lt;string, string&gt;()
+            {
+                {"First_Name", "First Name"},
+                {"Middle_Name", "Middle Initial"},
+                {"Last_Name", "Last Name"}
+            };
+            CustomPropertyDisplay = new Dictionary&lt;string, Func&lt;NameAndCity, string&gt;&gt;()
+            {
+                {"Middle_Name", r => r.Middle_Name.First().ToString() }
+            };
+        }   
+    }</pre>
+</p>

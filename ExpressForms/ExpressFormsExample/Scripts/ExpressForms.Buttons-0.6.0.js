@@ -65,11 +65,18 @@
                         $button.attr('data-actiontype', 'UPDATE');
                         values.Id = response.Id;
                         window.ef.writeToForm(formName, values);
-                    } else if (isDelete) {
+                    } else if (isDelete) {                        
                         // Upon a successful deletion, remove the deleted row from the display.
-                        $('table[data-formname="0"]'.replace(/0/, tableIdForDeletion))
-                            .find('tr[data-rowid="0"]'.replace(/0/, idForDeletion))
-                            .remove();
+                        var $table, $rowToDelete;
+
+                        // Find the row to delete.
+                        $table = $('table[data-formname="0"]'.replace(/0/, tableIdForDeletion))
+                        $rowToDelete = $table.find('tr[data-rowid="0"]'.replace(/0/, idForDeletion))
+                        if ($rowToDelete.length === 0) {
+                            // If an AJAX extension is used, this method may not find the row, so instead, look for a TR tag that contains the button.                            
+                            $rowToDelete = $button.parent().parent();
+                        }
+                        $rowToDelete.remove();
                     }
                 },
                 error: function (xhr) { alert(xhr.responseText) }
