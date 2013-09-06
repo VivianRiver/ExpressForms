@@ -6,6 +6,16 @@ For Fast and Easy Creation of CRUD Pages
 
 ============
 
+ExpressForms-0.6.1, released September 6, 2013, is primarily a bug-fix release.
+There was a bug that sometimes caused certain column of data to not display when using custom column headers.
+This is fixed.
+
+Also, the code that infers a key property has been modified so that in the absence of a key propery,
+ExpressForms will still display data, but won't update the data without the key.  This is useful when working
+with SQL views, for instance.
+
+***
+
 ExpressForms-0.6.0, released August 16, 2013, adds in the first AJAX support to ExpressForms.
 After all, ExpressForms would be only a simple toy without the ability to have an AJAX framework
 page through large datasets.

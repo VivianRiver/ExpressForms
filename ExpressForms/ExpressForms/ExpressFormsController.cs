@@ -187,10 +187,11 @@ namespace ExpressForms
         /// <returns></returns>
         public virtual ActionResult Index()
         {
-            string[] propertyNames = GetPropertyColumnNames();
+            string[] propertyNames = GetPropertyNames();
+            string[] customColumnNames = GetPropertyColumnNames();
 
             ExpressFormsIndexHeader indexHeader = new ExpressFormsIndexHeader();
-            indexHeader.Initialize(propertyNames, IndexButtons, ControllerContext);
+            indexHeader.Initialize(customColumnNames, IndexButtons, ControllerContext);
 
             IEnumerable<ExpressFormsIndexRecord> indexRecords = Exchange.Get().ToList()
                 .Select(r =>
@@ -355,6 +356,20 @@ namespace ExpressForms
         }
 
         #endregion
+
+        /// <summary>
+        /// Get an array containing the property names as defined in the class.
+        /// This function will check the names not to display, but will not use the custom column headers.
+        /// </summary>
+        /// <returns></returns>
+        protected string[] GetPropertyNames()
+        {
+            string[] propertyNames = typeof(T).GetProperties()
+                .Where(p => !IgnoredPropertyNames.Contains(p.Name))
+                .Select(p=>p.Name)
+                .ToArray();
+            return propertyNames;
+        }
 
         /// <summary>
         /// Get an array containing the property names to display at the top of the columns

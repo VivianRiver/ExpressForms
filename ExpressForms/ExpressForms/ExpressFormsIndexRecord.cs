@@ -40,30 +40,41 @@ namespace ExpressForms
                 else
                     return HtmlHelper.Encode(p.GetValue(record, null));
             }).ToList();
-
-            Id = Convert.ToString(Properties
-                .Single(p => p.Name == idPropertyName)
-                .GetValue(record, null));
-
-            // This gets the HTML for the buttons to display.
-            IEnumerable<string> buttonHtmlList = buttons.Select(b =>
+            
+            // If the class has a single valid ID property, use it to initialize [Edit] and [Remove] buttons.
+            // If none is found, then skip over this and print no buttons.
+            IEnumerable<PropertyInfo> idProperties = Properties
+                .Where(p => p.Name == idPropertyName);
+            if (idProperties.Count() == 1)
             {
-                // This is ugly as sin.
-                // TODO: FIX THIS!
-                if (b.GetType().ToString() == typeof(ExpressFormsModifyDataButton).ToString())
-                {
-                    ((ExpressFormsModifyDataButton)(b)).IdForDeletion = Convert.ToInt32(Id);
-                }
-                // If this is an "edit" button , add in the ID
-                if (b.GetType().ToString() == typeof(ExpressFormsEditButton).ToString())
-                {
-                    ((ExpressFormsEditButton)(b)).Parameters["Id"] = Id;
-                }
+                Id = Convert.ToString(Properties
+                    .Single(p => p.Name == idPropertyName)
+                    .GetValue(record, null));
 
-                return b.WriteButton(HtmlHelper, new object { }).ToString();
-            });
+                // This gets the HTML for the buttons to display.
+                IEnumerable<string> buttonHtmlList = buttons.Select(b =>
+                {
+                    // This is ugly as sin.
+                    // TODO: FIX THIS!
+                    if (b.GetType().ToString() == typeof(ExpressFormsModifyDataButton).ToString())
+                    {
+                        ((ExpressFormsModifyDataButton)(b)).IdForDeletion = Convert.ToInt32(Id);
+                    }
+                    // If this is an "edit" button , add in the ID
+                    if (b.GetType().ToString() == typeof(ExpressFormsEditButton).ToString())
+                    {
+                        ((ExpressFormsEditButton)(b)).Parameters["Id"] = Id;
+                    }
 
-            FieldHtml = fieldHtmlList.Concat(buttonHtmlList);
+                    return b.WriteButton(HtmlHelper, new object { }).ToString();
+                });
+                FieldHtml = fieldHtmlList.Concat(buttonHtmlList);
+            }
+            else
+            {
+                IEnumerable<string> buttonHtmlList = buttons.Select(b => " ");
+                FieldHtml = fieldHtmlList.Concat(buttonHtmlList);
+            }
         }
 
         private PropertyInfo[] getProperties<T>(string[] propertyNames)
