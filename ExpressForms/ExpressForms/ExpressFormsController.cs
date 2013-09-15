@@ -5,8 +5,10 @@ using System.Web;
 using System.Web.Mvc;
 using ExpressForms.Buttons;
 using ExpressForms.Inputs;
+using ExpressForms.Filters;
 using ExpressForms.IndexAjaxExtension;
 using System.Reflection;
+using System.Web.Script.Serialization;
 
 namespace ExpressForms
 {
@@ -24,7 +26,8 @@ namespace ExpressForms
             CustomPropertyNames = new Dictionary<string, string>();
             CustomPropertyDisplay = new Dictionary<string, Func<T, string>>();
             CustomEditorInputs = new Dictionary<string, ExpressFormsInput>();
-            IgnoredPropertyNames = new string[] { };            
+            IgnoredPropertyNames = new string[] { };
+            IndexFilterPlacement = ExpressFormsIndexViewModel.FilterPlacementEnum.None;
         }
 
         protected void Initialize(IExpressFormsExchange<T, TId> exchange)
@@ -33,7 +36,93 @@ namespace ExpressForms
         }
 
         #region properties and functions that are used to customize the appearance and behavior of forms
-        protected string FormName { get { return typeof(T).Name; } }                
+        protected string FormName { get { return typeof(T).Name; } }
+
+        protected virtual Dictionary<string, ExpressFormsFilter> GetIndexFilters()
+        {            
+            IEnumerable<PropertyInfo> properties = typeof(T).GetProperties()
+                .Where(p => (IgnoredPropertyNames == null) || !IgnoredPropertyNames.Contains(p.Name));
+
+            Func<PropertyInfo, ExpressFormsFilter> FilterSelector = p => GetIndexFilter(p);            
+
+            Dictionary<string, ExpressFormsFilter> filters = properties
+                .ToDictionary(p => p.Name, FilterSelector);
+
+            return filters;
+        } // end GetIndexFilters
+
+        private ExpressFormsFilter GetIndexFilter(PropertyInfo property)
+        {
+            ExpressFormsFilter filter;
+
+            string inputName = property.Name;                        
+
+            //filter = GetCustomEditorFilter(filterName, value, isVisible);
+            
+            // TODO: Implement function to allow for custom editor filters.
+
+            // Note that this refers only to primitive types such as Nullable<int>
+            // Other types, such as string, will not match this nullable test.
+            bool isNullable = property.PropertyType.Name == "Nullable`1";
+            string myPropertyTypeName = isNullable ?
+                property.PropertyType.GetGenericArguments().First().Name :
+                property.PropertyType.Name;
+
+            filter = null;
+            if (filter == null) // we didn't get an input from GetCustomEditorInput
+            {
+                switch (myPropertyTypeName)
+                {
+                    case "Boolean":
+                        filter = new ExpressFormsFilterBool()
+                        {
+                            FilterName = property.Name,
+                            IsNullable = isNullable
+                        };
+                        break;
+                    case "Byte":
+                    case "Int16":
+                    case "Int32":
+                    case "Int64":
+                    case "Single":
+                    case "Double":
+                    case "Decimal":
+                        filter = new ExpressFormsFilterNumber()
+                        {
+                            FilterName = property.Name,
+                            IsNullable = isNullable
+                        };
+
+                        break;
+                    case "DateTime":
+                        filter = new ExpressFormsFilterDate()
+                        {
+                            FilterName = property.Name,
+                            //IsNullable = isNullable
+                        };
+                        break;
+                    case "String":                    
+                        filter = new ExpressFormsFilterText()
+                        {
+                            FilterName = property.Name
+                        };
+                        break;
+                    default:
+                        filter = new ExpressFormsFilterText()
+                        {
+                            FilterName = property.Name,
+                            PartialViewName = "ExpressFormsFilters/NoFilterAvailable"
+                        };
+                        break;
+                }
+            }
+
+            // If this property has an associated "CustomPropertyName", use that for the display name.  Otherwise, use the inputName.
+            filter.FilterDisplayName = CustomPropertyNames.Keys.Contains(filter.FilterName) ? CustomPropertyNames[filter.FilterName] : filter.FilterName;
+
+            return filter;
+        }
+
         /// <summary>
         /// A virtual helper function that is meant to be used to get the buttons to display on the editor form.
         /// May be overridden in a derived class to change what buttons appear.
@@ -174,6 +263,7 @@ namespace ExpressForms
             }
         }
         protected ExpressFormsIndexAjaxExtension IndexAjaxExtension { get; set; }
+        protected ExpressFormsIndexViewModel.FilterPlacementEnum IndexFilterPlacement { get; set; }
 
         protected string IndexViewName { get; set; }
         protected string EditorViewName { get; set; }
@@ -206,7 +296,9 @@ namespace ExpressForms
                 Title = IndexTitle == null ? typeof(T).Name : IndexTitle,
                 GetAjaxUrl = Url.Action("GetAjax"),
                 IndexHeader = indexHeader,
-                IndexRecords = indexRecords
+                IndexRecords = indexRecords,
+                Filters = GetIndexFilters(),
+                FilterPlacement = IndexFilterPlacement
             };
 
             return View(IndexViewName, model);
@@ -226,7 +318,7 @@ namespace ExpressForms
                 Record = record,
                 IsNew = isNew,
                 Buttons = GetEditorButtons(isNew),
-                Inputs = GetEditorInputs(record)
+                Inputs = GetEditorInputs(record)                
             };
 
             return View(EditorViewName, model);
@@ -333,8 +425,14 @@ namespace ExpressForms
             IndexAjaxExtension.Initialize(ControllerContext, propertyNames);
 
             int totalRecordCount = Exchange.Get().Count();
-            IEnumerable<T> filteredRecords = IndexAjaxExtension.RecordFilter.GetFilteredRecords<T>(Exchange.Get());
-            int filteredRecordCount = IndexAjaxExtension.RecordFilter.GetFilteredRecords<T>(Exchange.Get()).Count();
+
+            string AdvancedSearchJson = Request["ef_Filter"];
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            Dictionary<string, Dictionary<string, string>> filterEntries = serializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(AdvancedSearchJson);
+            Dictionary<string, ExpressFormsFilter> indexFilters = GetIndexFilters();
+            
+            IEnumerable<T> filteredRecords = IndexAjaxExtension.RecordFilter.GetFilteredRecords<T>(Exchange.Get(), indexFilters, filterEntries);
+            int filteredRecordCount = IndexAjaxExtension.RecordFilter.GetFilteredRecords<T>(Exchange.Get(), indexFilters, filterEntries).Count();
             IEnumerable<T> sortedRecords = IndexAjaxExtension.RecordSorting.GetSortedRecords<T>(filteredRecords);
             IEnumerable<T> pageOfRecords = IndexAjaxExtension.RecordPagination.GetPageOfRecords<T>(sortedRecords);
             
@@ -357,6 +455,7 @@ namespace ExpressForms
 
         #endregion
 
+        #region helper methods
         /// <summary>
         /// Get an array containing the property names as defined in the class.
         /// This function will check the names not to display, but will not use the custom column headers.
@@ -391,5 +490,6 @@ namespace ExpressForms
             string columnName = CustomPropertyNames.Keys.Contains(name) ? CustomPropertyNames[name] : property.Name;
             return columnName;
         }
+        #endregion #region methods
     }
 }

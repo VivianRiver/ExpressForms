@@ -11,6 +11,19 @@ namespace ExpressForms.Extensions.Ace
 {
     public class ExpressFormsAceInput : ExpressForms.Inputs.ExpressFormsInput
     {
+        /// <summary>
+        /// A value that describes the width of the Ace editor to be rendered in CSS syntax.
+        /// eg. 500px, 30em
+        /// There is no error checking here, so don't populate this property from an untrusted source.
+        /// </summary>
+        public string EditorWidth { get; set; }
+        /// <summary>
+        /// A value that describes the height of the Ace editor to be rendered in CSS syntax.
+        /// eg. 500px, 30em
+        /// There is no error checking here, so don't populate this property from an untrusted source.
+        /// </summary>
+        public string EditorHeight { get; set; }
+
         public ExpressFormsAceInput() : base() { }
 
         public ExpressFormsAceInput(ExpressFormsInput input) : base(input) { }        
@@ -26,7 +39,7 @@ namespace ExpressForms.Extensions.Ace
                 tb.Attributes.Add(kvpToAdd);
             }
             tb.Attributes.Add("id", InputName);
-            tb.Attributes.Add("style","position:relative; width: 500px; height: 200px;");
+            tb.Attributes.Add("style", string.Format("position:relative; width: {0}; height: {1}", EditorWidth ?? "500px", EditorHeight ?? "200px"));
 
             tb.InnerHtml = helper.Encode(this.Value);
 

@@ -1,0 +1,35 @@
+﻿@model ExpressForms.Filters.ExpressFormsFilterBool
+@{
+    Layout = "~/Views/Shared/ExpressFormsFilters/_FilterLayout.cshtml";
+}
+
+@{
+    string[] choices;
+    if (Model.IsNullable)
+    {
+        choices = new string[]
+        {
+            "True, False, and Null", "True and False", "True And Null", "False and Null", "True", "False", "Null"
+        };
+        
+    }
+    else
+    {
+        choices = new string[]
+        {
+            "True and False", "True", "False"   
+        };
+    }
+}
+
+@{string divId = "divFilter_" + Model.FilterName; }
+
+<div id='@divId'>
+    @Html.DropDownList(Model.FilterName, choices.Select(choice => new SelectListItem() { Text=choice, Value=choice}), new { @class = "ExpressFormsFilterBool" })
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#@divId').find('input').change(ef.filterCriteriaChanged);
+    });
+</script>

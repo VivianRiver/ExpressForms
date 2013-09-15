@@ -7,6 +7,7 @@
     <Schema Namespace="ExpressFormsExampleModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
         <EntityContainer Name="ExpressFormsExampleModelStoreContainer">
           <EntitySet Name="Engineer" EntityType="ExpressFormsExampleModel.Store.Engineer" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Months" EntityType="ExpressFormsExampleModel.Store.Months" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="NameAndCity" EntityType="ExpressFormsExampleModel.Store.NameAndCity" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="NumberSequences" EntityType="ExpressFormsExampleModel.Store.NumberSequences" store:Type="Tables" Schema="dbo" />
         </EntityContainer>
@@ -21,6 +22,20 @@
           <Property Name="FavoriteLanguage" Type="varchar" MaxLength="100" />
           <Property Name="CodeSnippet" Type="varchar(max)" />
         </EntityType>
+        <EntityType Name="Months">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="MonthName" Type="varchar(max)" />
+          <Property Name="NumDaysByte" Type="tinyint" Nullable="false" />
+          <Property Name="NumDaysShort" Type="smallint" Nullable="false" />
+          <Property Name="NumDaysInt" Type="int" Nullable="false" />
+          <Property Name="NumDaysLong" Type="bigint" Nullable="false" />
+          <Property Name="NumDaysSingle" Type="real" Nullable="false" />
+          <Property Name="NumDaysDouble" Type="float" />
+          <Property Name="CanChangeNumDays" Type="bit" />
+        </EntityType>
         <EntityType Name="NameAndCity">
           <Key>
             <PropertyRef Name="Id" />
@@ -29,7 +44,7 @@
           <Property Name="First Name" Type="varchar(max)" />
           <Property Name="Middle Name" Type="varchar(max)" />
           <Property Name="Last Name" Type="varchar(max)" />
-          <Property Name="City" Type="varchar(max)" />
+          <Property Name="City" Type="varchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="NumberSequences">
           <Key>
@@ -48,6 +63,7 @@
           <EntitySet Name="Engineers" EntityType="ExpressFormsExampleModel.Engineer" />
           <EntitySet Name="NumberSequences" EntityType="ExpressFormsExampleModel.NumberSequence" />
           <EntitySet Name="NameAndCities" EntityType="ExpressFormsExampleModel.NameAndCity" />
+          <EntitySet Name="Months" EntityType="ExpressFormsExampleModel.Month" />
         </EntityContainer>
         <EntityType Name="Engineer">
           <Key>
@@ -78,6 +94,20 @@
           <Property Type="String" Name="Middle_Name" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Type="String" Name="Last_Name" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Type="String" Name="City" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Month">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="MonthName" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="Byte" Name="NumDaysByte" Nullable="false" />
+          <Property Type="Int16" Name="NumDaysShort" Nullable="false" />
+          <Property Type="Int32" Name="NumDaysInt" Nullable="false" />
+          <Property Type="Int64" Name="NumDaysLong" Nullable="false" />
+          <Property Type="Single" Name="NumDaysSingle" Nullable="false" />
+          <Property Type="Double" Name="NumDaysDouble" />
+          <Property Type="Boolean" Name="CanChangeNumDays" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -118,6 +148,21 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Months">
+            <EntityTypeMapping TypeName="ExpressFormsExampleModel.Month">
+              <MappingFragment StoreEntitySet="Months">
+                <ScalarProperty Name="CanChangeNumDays" ColumnName="CanChangeNumDays" />
+                <ScalarProperty Name="NumDaysDouble" ColumnName="NumDaysDouble" />
+                <ScalarProperty Name="NumDaysSingle" ColumnName="NumDaysSingle" />
+                <ScalarProperty Name="NumDaysLong" ColumnName="NumDaysLong" />
+                <ScalarProperty Name="NumDaysInt" ColumnName="NumDaysInt" />
+                <ScalarProperty Name="NumDaysShort" ColumnName="NumDaysShort" />
+                <ScalarProperty Name="NumDaysByte" ColumnName="NumDaysByte" />
+                <ScalarProperty Name="MonthName" ColumnName="MonthName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -142,6 +187,7 @@
         <EntityTypeShape EntityType="ExpressFormsExampleModel.Engineer" Width="1.5" PointX="0.75" PointY="0.75" Height="2.172587890625" IsExpanded="true" />
         <EntityTypeShape EntityType="ExpressFormsExampleModel.NumberSequence" Width="1.5" PointX="3.375" PointY="0.75" Height="1.5956835937499996" />
         <EntityTypeShape EntityType="ExpressFormsExampleModel.NameAndCity" Width="1.5" PointX="0.75" PointY="3.75" Height="1.9802864583333322" />
+        <EntityTypeShape EntityType="ExpressFormsExampleModel.Month" Width="1.5" PointX="3.375" PointY="3.75" Height="2.7494921874999996" />
       </Diagram>
     </Diagrams>
   </Designer>

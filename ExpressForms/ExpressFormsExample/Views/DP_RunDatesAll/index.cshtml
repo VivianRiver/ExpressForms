@@ -1,0 +1,137 @@
+﻿@using System.Data.Objects.DataClasses
+@using System.Reflection
+@using TDPAdvertising.Web
+@using System.Web.Script.Serialization
+@model ExpressForms.ExpressFormsIndexViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>
+    @Model.Title <input type='button' id='btnShowColumnSelection' value='Show/Hide Columns' />
+</h1>
+
+@{
+    Html.RenderPartial("ExpressFormsFilterPartial", new ExpressForms.ExpressFormsFilterModel() { Filters = Model.Filters });
+}
+
+<input type='button' value='Test Filter' onclick='var x = ef.readFilterCriteria(); alert(JSON.stringify(x)); alert(JSON.stringify(x).length);' />
+
+<div class='ExpressFormsTableContainer'>
+    @Html.WriteStaticTable(Model.Title, Model.IndexHeader, new ExpressForms.ExpressFormsIndexRecord[] { } /* print no records until they are fetched using ajax */)
+</div>
+
+@Html.Hidden("hdnGetAjaxUrl", Model.GetAjaxUrl)
+
+@Scripts.Render("~/Scripts/jquery.dataTables/jquery.dataTables.js")
+
+@* Dialog box used to allow the user to decide which columns to show. *@
+<div style='display:none;' id='divColumnSelection'>
+    <input type='button' id='btnSelectAll' value='Select All' />
+    <input type='button' id='btnSelectNone' value='Select None' />    
+    @* Display a checkbox in each column.  Use CSS to put four of them on each row. *@
+    @{
+        string[] columnNames = typeof(DP_RunDatesAll).GetProperties()
+            .Where(p=>!new string[] {"EntityKey", "EntityState"}.Contains(p.Name))
+            .Select(p => p.Name)
+            .ToArray();         
+        for (int i = 0; i < columnNames.Length; i++)
+        {        
+            string columnName = columnNames[i];     
+            <div style='float:left; width:250px; height:30px;'>
+                @Html.CheckBox(columnName, true, new { @class="columnSelection", data_columnname=columnName, data_columnindex=i })
+                @Html.Label(columnName, columnName)
+            </div>
+            if (i % 4 == 0)
+            {
+             <div style='clear:both;'></div>   
+            }
+        }        
+        <div style='clear:both;'></div>   
+    }
+    <input type='button' id='btnSelectOk' value='OK' />
+</div>
+
+@* Dialog box used to allow the user to specify a filter *@
+@{
+    
+}
+
+<script>
+    $(document).ready(function () {
+        var $table, visibleColumnIndices;
+        $table = $('.ExpressFormsTableContainer').find('table').dataTable({
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": $('#hdnGetAjaxUrl').val(),
+            "fnDrawCallback": function () {
+                window.ef.resetButtonHandlers();
+            },
+            "fnServerParams": function (aoData, fnCallback) {                
+                aoData.push({ name: 'ef_Filter', value: JSON.stringify(ef.readFilterCriteria()) });
+            }
+        });
+
+        // When the page loads, all columns are selected.
+        visibleColumnIndices = [];
+        $('.columnSelection').each(function () {
+            visibleColumnIndices.push($(this).attr('data-columnIndex'));
+        });
+
+        $('#btnShowColumnSelection').click(function () {
+            // Show the dialog and set up the form so that the checkboxes for the visible columns are selected.
+            $('.columnSelection').each(function () {
+                var columnIndex;
+                columnIndex = parseInt($(this).attr('data-columnindex'));
+                if ($.inArray(columnIndex, visibleColumnIndices) > -1)
+                    $(this).prop('checked', true)
+                else
+                    $(this).removeAttr('checked');
+            });
+
+            $('#divColumnSelection').dialog({
+                title: 'Column Selection',
+                modal: true,
+                width: 1100,
+                height: 750
+            });
+        });
+
+        $('#btnSelectAll').click(function () {
+            $('.columnSelection').prop('checked', 'checked');
+        });
+        $('#btnSelectNone').click(function () {
+            $('.columnSelection').removeAttr('checked');
+        });
+        $('#btnSelectOk').click(function () {
+            var atLeastOneChecked;
+            atLeastOneChecked = $('.columnSelection:checked').length > 0;
+            if (!atLeastOneChecked) {
+                alert('Please select at least one');
+                return;
+            }
+            $('#divColumnSelection').dialog("close");
+            visibleColumnIndices = [];
+            $('.columnSelection').each(function () {
+                var isChecked, columnIndex;
+                isChecked = $(this).is(':checked');
+                columnIndex = parseInt($(this).attr('data-columnindex'));
+                if (isChecked) {
+                    showColumn(columnIndex);
+                    visibleColumnIndices.push(columnIndex);
+                }
+                else
+                    hideColumn(columnIndex);
+            });
+            $table.width('100%');
+        });
+
+        function showColumn(columnIndex) {
+            $table.fnSetColumnVis(columnIndex, true);
+        }
+        function hideColumn(columnIndex) {
+            $table.fnSetColumnVis(columnIndex, false);
+        }
+    });
+</script>

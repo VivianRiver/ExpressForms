@@ -266,7 +266,7 @@
 <p>
     @Html.ActionLink("NameAndCity1", "Index", "NameAndCity1")
     <br />
-    In the previous example, most features of the table work right away, such as filtering, sorting, and paging.  That's because the extension that I wrote has generic methods built in
+    In the previous example, most features of the table work right away, such as sorting, and paging.  That's because the extension that I wrote has generic methods built in
     that provide for these functions to be implemented across various data types such as integers and strings.
     <br /><br />
     Here, I've added a few simple commands to format the column headers and data.
@@ -290,4 +290,37 @@
             };
         }   
     }</pre>
+</p>
+
+<p>
+    @Html.ActionLink("NameAndCity2", "Index", "NameAndCity2")
+    <br />
+    Finally, this next example shows filtering.  This was added on September 15, 2013.  There are "generic" filter types for various different SQL types.
+    ExpressForms will generate methods on the fly from the filter data that Entity Framework will automatically translate into SQL queries.
+    <br />
+    To make it work, I just specified the placement of the filters on the page at the end of the NameAndCity2Controller constructor.
+    To not use the filter, just omit the placement and it will default to hidden.
+    <pre>
+        public class NameAndCity2Controller : BaseController&lt;NameAndCity&gt;
+    {
+        public NameAndCity2Controller()
+            : base()
+        {
+            IndexTitle = "Names And Cities";
+            IndexViewName = "jqueryDataTablesIndexView";
+            IndexAjaxExtension = new ExpressFormsDataTablesIndexAjaxExtension();
+            CustomPropertyNames = new Dictionary&lt;string, string&gt;()
+            {
+                {"First_Name", "First Name"},
+                {"Middle_Name", "Middle Initial"},
+                {"Last_Name", "Last Name"}
+            };
+            CustomPropertyDisplay = new Dictionary&lt;string, Func&lt;NameAndCity, string&gt;&gt;()
+            {
+                {"Middle_Name", r => r.Middle_Name.First().ToString() }
+            };
+            IndexFilterPlacement = ExpressForms.ExpressFormsIndexViewModel.FilterPlacementEnum.Top;
+        }
+    }
+    </pre>
 </p>

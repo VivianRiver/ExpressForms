@@ -112,6 +112,22 @@ namespace ExpressFormsExample
             }
         }
         private ObjectSet<NameAndCity> _NameAndCities;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<Month> Months
+        {
+            get
+            {
+                if ((_Months == null))
+                {
+                    _Months = base.CreateObjectSet<Month>("Months");
+                }
+                return _Months;
+            }
+        }
+        private ObjectSet<Month> _Months;
 
         #endregion
 
@@ -139,6 +155,14 @@ namespace ExpressFormsExample
         public void AddToNameAndCities(NameAndCity nameAndCity)
         {
             base.AddObject("NameAndCities", nameAndCity);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the Months EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToMonths(Month month)
+        {
+            base.AddObject("Months", month);
         }
 
         #endregion
@@ -322,6 +346,265 @@ namespace ExpressFormsExample
         private global::System.String _CodeSnippet;
         partial void OnCodeSnippetChanging(global::System.String value);
         partial void OnCodeSnippetChanged();
+
+        #endregion
+
+    
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="ExpressFormsExampleModel", Name="Month")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class Month : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new Month object.
+        /// </summary>
+        /// <param name="id">Initial value of the Id property.</param>
+        /// <param name="numDaysByte">Initial value of the NumDaysByte property.</param>
+        /// <param name="numDaysShort">Initial value of the NumDaysShort property.</param>
+        /// <param name="numDaysInt">Initial value of the NumDaysInt property.</param>
+        /// <param name="numDaysLong">Initial value of the NumDaysLong property.</param>
+        /// <param name="numDaysSingle">Initial value of the NumDaysSingle property.</param>
+        public static Month CreateMonth(global::System.Int32 id, global::System.Byte numDaysByte, global::System.Int16 numDaysShort, global::System.Int32 numDaysInt, global::System.Int64 numDaysLong, global::System.Single numDaysSingle)
+        {
+            Month month = new Month();
+            month.Id = id;
+            month.NumDaysByte = numDaysByte;
+            month.NumDaysShort = numDaysShort;
+            month.NumDaysInt = numDaysInt;
+            month.NumDaysLong = numDaysLong;
+            month.NumDaysSingle = numDaysSingle;
+            return month;
+        }
+
+        #endregion
+
+        #region Primitive Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 Id
+        {
+            get
+            {
+                return _Id;
+            }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    ReportPropertyChanging("Id");
+                    _Id = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
+        private global::System.Int32 _Id;
+        partial void OnIdChanging(global::System.Int32 value);
+        partial void OnIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String MonthName
+        {
+            get
+            {
+                return _MonthName;
+            }
+            set
+            {
+                OnMonthNameChanging(value);
+                ReportPropertyChanging("MonthName");
+                _MonthName = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("MonthName");
+                OnMonthNameChanged();
+            }
+        }
+        private global::System.String _MonthName;
+        partial void OnMonthNameChanging(global::System.String value);
+        partial void OnMonthNameChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Byte NumDaysByte
+        {
+            get
+            {
+                return _NumDaysByte;
+            }
+            set
+            {
+                OnNumDaysByteChanging(value);
+                ReportPropertyChanging("NumDaysByte");
+                _NumDaysByte = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("NumDaysByte");
+                OnNumDaysByteChanged();
+            }
+        }
+        private global::System.Byte _NumDaysByte;
+        partial void OnNumDaysByteChanging(global::System.Byte value);
+        partial void OnNumDaysByteChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int16 NumDaysShort
+        {
+            get
+            {
+                return _NumDaysShort;
+            }
+            set
+            {
+                OnNumDaysShortChanging(value);
+                ReportPropertyChanging("NumDaysShort");
+                _NumDaysShort = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("NumDaysShort");
+                OnNumDaysShortChanged();
+            }
+        }
+        private global::System.Int16 _NumDaysShort;
+        partial void OnNumDaysShortChanging(global::System.Int16 value);
+        partial void OnNumDaysShortChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 NumDaysInt
+        {
+            get
+            {
+                return _NumDaysInt;
+            }
+            set
+            {
+                OnNumDaysIntChanging(value);
+                ReportPropertyChanging("NumDaysInt");
+                _NumDaysInt = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("NumDaysInt");
+                OnNumDaysIntChanged();
+            }
+        }
+        private global::System.Int32 _NumDaysInt;
+        partial void OnNumDaysIntChanging(global::System.Int32 value);
+        partial void OnNumDaysIntChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int64 NumDaysLong
+        {
+            get
+            {
+                return _NumDaysLong;
+            }
+            set
+            {
+                OnNumDaysLongChanging(value);
+                ReportPropertyChanging("NumDaysLong");
+                _NumDaysLong = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("NumDaysLong");
+                OnNumDaysLongChanged();
+            }
+        }
+        private global::System.Int64 _NumDaysLong;
+        partial void OnNumDaysLongChanging(global::System.Int64 value);
+        partial void OnNumDaysLongChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Single NumDaysSingle
+        {
+            get
+            {
+                return _NumDaysSingle;
+            }
+            set
+            {
+                OnNumDaysSingleChanging(value);
+                ReportPropertyChanging("NumDaysSingle");
+                _NumDaysSingle = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("NumDaysSingle");
+                OnNumDaysSingleChanged();
+            }
+        }
+        private global::System.Single _NumDaysSingle;
+        partial void OnNumDaysSingleChanging(global::System.Single value);
+        partial void OnNumDaysSingleChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Double> NumDaysDouble
+        {
+            get
+            {
+                return _NumDaysDouble;
+            }
+            set
+            {
+                OnNumDaysDoubleChanging(value);
+                ReportPropertyChanging("NumDaysDouble");
+                _NumDaysDouble = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("NumDaysDouble");
+                OnNumDaysDoubleChanged();
+            }
+        }
+        private Nullable<global::System.Double> _NumDaysDouble;
+        partial void OnNumDaysDoubleChanging(Nullable<global::System.Double> value);
+        partial void OnNumDaysDoubleChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Boolean> CanChangeNumDays
+        {
+            get
+            {
+                return _CanChangeNumDays;
+            }
+            set
+            {
+                OnCanChangeNumDaysChanging(value);
+                ReportPropertyChanging("CanChangeNumDays");
+                _CanChangeNumDays = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("CanChangeNumDays");
+                OnCanChangeNumDaysChanged();
+            }
+        }
+        private Nullable<global::System.Boolean> _CanChangeNumDays;
+        partial void OnCanChangeNumDaysChanging(Nullable<global::System.Boolean> value);
+        partial void OnCanChangeNumDaysChanged();
 
         #endregion
 

@@ -6,6 +6,20 @@ For Fast and Easy Creation of CRUD Pages
 
 ============
 
+ExpressForms-0.7.0, released September 15, 2013 adds in sophisticated filtering with AJAX data.
+I had intended to expand the AJAX support to multiple extensions, but that's going to have to wait
+for another time.  I need the filtering for a project I'm working on, so that's the priority.
+
+"Filters" describe two things.  Given a data type, they describe a form that the user can fill out
+to describe how to filter the data, and they also have functionality to describe that logic in code.
+Unfortunately, given how the structure of your data is unknown to ExpressForms, the DynamicMethod
+object is used to generate CIL code that reads the properties of your classes at runtime.  Reflection
+is slow and incompatible with Entity Framework, which I use a lot.
+
+In the next release, I plan to give "Filters" the same customizability that "Inputs" have.
+
+***
+
 ExpressForms-0.6.1, released September 6, 2013, is primarily a bug-fix release.
 There was a bug that sometimes caused certain column of data to not display when using custom column headers.
 This is fixed.
@@ -32,8 +46,6 @@ AJAX frameworks.
 
 Unfortunately, the limitation that tables must have a 32-bit integer column called "Id" for the
 primary key remains for now.
-
-Also, note that some examples are hosted here: http://danielsadventure.info/expressformsexample-0.6.0/
 
 ***
 

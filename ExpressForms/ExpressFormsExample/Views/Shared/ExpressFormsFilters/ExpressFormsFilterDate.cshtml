@@ -1,0 +1,19 @@
+﻿@model ExpressForms.Filters.ExpressFormsFilterDate
+@{
+    Layout = "~/Views/Shared/ExpressFormsFilters/_FilterLayout.cshtml";
+}
+
+@{string divId = "divFilter_" + Model.FilterName; }
+
+<div id='@divId'>
+    Min Date
+    @Html.TextBox(Model.FilterName + "MinDate", "", new { @class = "ExpressFormsFilterDateMin" })
+    Max Date
+    @Html.TextBox(Model.FilterName + "MaxDate", "", new { @class = "ExpressFormsFilterDateMax" })
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#@divId').find('input').change(ef.filterCriteriaChanged);
+    });
+</script>

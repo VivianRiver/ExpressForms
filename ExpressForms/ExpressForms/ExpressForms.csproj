@@ -34,6 +34,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.20710.0\lib\net40\System.Web.Mvc.dll</HintPath>
@@ -51,6 +52,13 @@
     <Compile Include="Buttons\ExpressFormsModifyDataButton.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="ExpressFormsEditorModel.cs" />
+    <Compile Include="ExpressFormsFilterModel.cs" />
+    <Compile Include="Filters\ExpressFormsFilterBool.cs" />
+    <Compile Include="Filters\ExpressFormsFilterDate.cs" />
+    <Compile Include="Filters\ExpressFormsFilter.cs" />
+    <Compile Include="Filters\ExpressFormsFilterNumber.cs" />
+    <Compile Include="Filters\ExpressFormsFilterText.cs" />
+    <Compile Include="Filters\IlGeneratorExtensions.cs" />
     <Compile Include="IndexAjaxExtension\ExpressFormsIndexAjaxExtension.cs" />
     <Compile Include="ExpressFormsIndexHeader.cs" />
     <Compile Include="ExpressFormsIndexRecord.cs" />

@@ -1,0 +1,10 @@
+﻿@model ExpressForms.Filters.ExpressFormsFilter
+
+<div
+    data-name='@Model.FilterName'
+    data-filtername='@Model.FilterName'
+    data-filtertype='@Model.GetType().Name'
+    class='ExpressForms ExpressFormsFilter'
+>    
+    @RenderBody()
+</div>

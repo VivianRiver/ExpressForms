@@ -21,5 +21,28 @@ namespace ExpressForms
         /// Contains the HTML to printed for each record
         /// </summary>
         public IEnumerable<ExpressFormsIndexRecord> IndexRecords { get; set; }
+
+        /// <summary>
+        /// Optionally contains filters that the user can use to filter data.
+        /// (Currently only supported with jQuery.dataTables AJAX)
+        /// </summary>
+        public Dictionary<string, Filters.ExpressFormsFilter> Filters { get; set; }
+
+        /// <summary>
+        /// Tells where on the page the filter should be displayed (if at all)
+        /// </summary>
+        public FilterPlacementEnum FilterPlacement { get; set; }
+
+        /// <summary>
+        /// Where the filter should be displayed on the screen.
+        /// "Dialog" is experimental for now.  It still has some problems.
+        /// </summary>
+        public enum FilterPlacementEnum : byte
+        {
+            None = 0,
+            Top = 1,
+            Bottom = 2,
+            Dialog = 3
+        }
     }
 }

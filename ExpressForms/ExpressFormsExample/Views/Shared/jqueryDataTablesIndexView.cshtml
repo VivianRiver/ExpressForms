@@ -7,25 +7,49 @@
 }
 
 <h1>
-    @Model.Title
+    @Model.Title    
 </h1>
+
+@* If placing the filter in a dialog box, render the dialog and the button to show it here. *@
+@if (Model.FilterPlacement == ExpressForms.ExpressFormsIndexViewModel.FilterPlacementEnum.Dialog)
+{
+        
+        <input type='button' id='btnOpenFilterDialog' value='Filter' />
+        <div id='dialogFilter' style='display:none;background-color:White;'>
+            @{Html.RenderPartial("ExpressFormsFilterPartial", new ExpressForms.ExpressFormsFilterModel() { Filters = Model.Filters }); }
+            <div style='text-align:right;'>
+                <input type='button' id='btnCloseFilterDialog' value='Close' />
+            </div>
+        </div>    
+        <script>
+            $(document).ready(function () {
+                $('#btnOpenFilterDialog').click(function () { $('#dialogFilter').dialog(); });
+                $('#btnCloseFilterDialog').click(function () { $('#dialogFilter').dialog('close'); });
+            });
+        </script>    
+}
+
+
+
+@if (Model.FilterPlacement == ExpressForms.ExpressFormsIndexViewModel.FilterPlacementEnum.Top)
+{
+    Html.RenderPartial("ExpressFormsFilterPartial", new ExpressForms.ExpressFormsFilterModel() { Filters = Model.Filters });
+}
 
 <p>
     @Html.ActionLink("Add New", "Editor")
 </p>
 
-@Html.WriteStaticTable(Model.Title, Model.IndexHeader, new ExpressForms.ExpressFormsIndexRecord[]{} /* print no records until they are fetched using ajax */)
+<div class='ExpressFormsTableContainer'>
+    @Html.WriteStaticTable(Model.Title, Model.IndexHeader, new ExpressForms.ExpressFormsIndexRecord[] { } /* print no records until they are fetched using ajax */)
+</div>
+
+@if (Model.FilterPlacement == ExpressForms.ExpressFormsIndexViewModel.FilterPlacementEnum.Bottom)
+{    
+    Html.RenderPartial("ExpressFormsFilterPartial", new ExpressForms.ExpressFormsFilterModel() { Filters = Model.Filters });
+}
 
 @Html.Hidden("hdnGetAjaxUrl", Model.GetAjaxUrl)
 
 @Scripts.Render("~/Scripts/jquery.dataTables/jquery.dataTables.js")
-<script>
-    $('table').dataTable({
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": $('#hdnGetAjaxUrl').val(),        
-        "fnDrawCallback": function () {            
-            window.ef.resetButtonHandlers();
-        }
-    });
-</script>
+@Scripts.Render("~/bundles/ExpressForms.jquery.dataTables")             

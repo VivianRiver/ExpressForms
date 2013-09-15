@@ -25,6 +25,6 @@ namespace ExpressFormsExample.Controllers
             {
                 {"Middle_Name", r => r.Middle_Name.First().ToString() }
             };
-        }   
+        }
     }
 }

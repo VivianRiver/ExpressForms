@@ -7,7 +7,9 @@ using System.Data.Objects.DataClasses;
 using System.Reflection;
 using System.Reflection.Emit;
 using ExpressForms.IndexAjaxExtension;
+using ExpressForms.Filters;
 using System.Web;
+using System.Web.Script.Serialization;
 
 namespace ExpressForms.Extensions.jquery.dataTables
 {
@@ -15,72 +17,66 @@ namespace ExpressForms.Extensions.jquery.dataTables
     {
         public IEnumerable<string> PropertyNames { get; set; }
         public string SearchKey { get; set; }
+        public string AdvancedSearchJson { get; set; }
 
         public DataTablesFilter() { }
 
         public override void Initialize(HttpRequestBase request, IEnumerable<string> propertyNames)
         {
             PropertyNames = propertyNames;
-            SearchKey = request.QueryString["sSearch"];
-        }        
-
-        public override IEnumerable<T> GetFilteredRecords<T>(IEnumerable<T> records)
-        {
-            // The goal here is to allow for a developer to provide a method for filtering records,
-            // but to also provide a default method that will work with all instances of EntityObject.
-            // To that end, I believe it is necessary to use the fun fun DynamicMethod object.
-
-            // Don't attempt to filter if there is no search key provided.
-            if (string.IsNullOrWhiteSpace(SearchKey))
-                return records;
-
-            Func<T, bool> filter = GetDefaultFilter<T>();
-
-            return records.Where(filter);
+            SearchKey = request.QueryString["sSearch"];            
         }
 
         delegate bool FilterDelegate<T>(T t);
-        public Func<T, bool> GetDefaultFilter<T>()
-        {
-            PropertyInfo[] propertiesToFilterOn = typeof(T).GetProperties()
-                .Where(p => p.PropertyType.Name=="String" && PropertyNames.Contains(p.Name))
-                .ToArray();
+        /// <summary>
+        /// Get records filtered according to the data the user keyed into the filter form.
+        /// </summary>        
+        /// <param name="records">the records to filter</param>
+        /// <param name="filters">a dictionary where the keys are the names of the columns and the values are the filter associated with each one</param>
+        /// <param name="filterEntries">a dictionary of dictionaries where the keys are the names of the columns and the values (which are dictionaries of strings)
+        /// contain the values input on each filter form.</param>
+        /// <returns></returns>
+        public override IEnumerable<T> GetFilteredRecords<T>(IEnumerable<T> records, Dictionary<string, ExpressFormsFilter> filters, Dictionary<string, Dictionary<string,string>> filterEntries)
+        {                                    
+            Func<T, bool> advancedFilter = GetFunctionForExpressFormsFilters<T>(filters, filterEntries);
+                                    
+            return records                
+                .Where(advancedFilter);            
+        }
 
+        public Func<T, bool> GetFunctionForExpressFormsFilters<T>(Dictionary<string, ExpressFormsFilter> filters, Dictionary<string, Dictionary<string, string>> filterEntries)
+        {                       
             DynamicMethod method = new DynamicMethod("Filter", typeof(bool), new Type[] { typeof(T) });
             ILGenerator generator = method.GetILGenerator();
 
-            string searchKeyLower = SearchKey.ToLower();
-            MethodInfo StringToLower = typeof(string).GetMethod("ToLower", new Type[] { });
-            MethodInfo StringStartsWith = typeof(String).GetMethod("StartsWith", new Type[] { typeof(string) });            
-            
+            PropertyInfo[] propertiesToFilterOn = typeof(T).GetProperties()
+                .Where(p => PropertyNames.Contains(p.Name))
+                .ToArray();
+
+            int variableIndex = 0;
             foreach (PropertyInfo property in propertiesToFilterOn)
             {
-                Label checkNextPropertyLabel = generator.DefineLabel();
-                MethodInfo GetPropertyValue = property.GetGetMethod();
-
-                // First, check to see if this property is null.
-                // If it is, go on to the next property.                
-                generator.Emit(OpCodes.Ldarg_0);
-                generator.Emit(OpCodes.Callvirt, GetPropertyValue);
-                generator.Emit(OpCodes.Brfalse_S, checkNextPropertyLabel);
-                // Load the next property of the argument and make it lower-case.
-                generator.Emit(OpCodes.Ldarg_0);
-                generator.Emit(OpCodes.Callvirt, GetPropertyValue);
-                generator.Emit(OpCodes.Callvirt, StringToLower);
-                // Load the lower-cased search key and see if the lower-cased property starts with it.
-                generator.Emit(OpCodes.Ldstr, searchKeyLower);
-                generator.Emit(OpCodes.Callvirt, StringStartsWith);
-                // If the search key doesn't match, then go on to the next property.
-                generator.Emit(OpCodes.Brfalse_S, checkNextPropertyLabel);
-                // If it does match, then return true.
-                generator.Emit(OpCodes.Ldc_I4_1);
-                generator.Emit(OpCodes.Ret);
-                generator.MarkLabel(checkNextPropertyLabel);
+                // Generate IL variable declarations.
+                // First, check that a filter has been provided for this property to avoid errors.
+                if (!filters.Keys.Contains(property.Name))
+                    continue;
+                ExpressFormsFilter filter = filters[property.Name];
+                filter.GenerateFilterLocalDeclarations(generator, variableIndex, out variableIndex);
             }
-            // After all the properties to test have been enumerated and no match has been found, return false.
-            generator.Emit(OpCodes.Ldc_I4_0);
-            generator.Emit(OpCodes.Ret);
 
+            foreach (PropertyInfo property in propertiesToFilterOn)
+            {
+                // Generate IL to implement filtering                
+                // First, check that a filter has been provided for this property to avoid errors.
+                if (!filters.Keys.Contains(property.Name) || !filterEntries.Keys.Contains(property.Name))
+                    continue;
+                ExpressFormsFilter filter = filters[property.Name];
+                Dictionary<string, string> filterEntry = filterEntries[property.Name];
+                filter.GenerateFilterIl(generator, filterEntry, property);                
+            }
+
+            generator.EmitReturnTrue();
+                                    
             return ((FilterDelegate<T>)(method.CreateDelegate(typeof(FilterDelegate<T>)))).Invoke;
         }
     }

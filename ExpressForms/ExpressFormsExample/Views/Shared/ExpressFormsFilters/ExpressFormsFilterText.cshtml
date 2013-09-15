@@ -1,0 +1,19 @@
+﻿@model ExpressForms.Filters.ExpressFormsFilterText
+@{
+    Layout = "~/Views/Shared/ExpressFormsFilters/_FilterLayout.cshtml";
+}
+
+@{string divId = "divFilter_" + Model.FilterName; }
+
+<div id='@divId'>
+    @Html.TextBox(Model.FilterName, "", new { @class = "ExpressFormsFilterText" })
+    @Html.RadioButton(Model.FilterName + "FilterMode", "StartsWith", true) Starts With
+    @Html.RadioButton(Model.FilterName+"FilterMode","Contains", false) Contains
+    @Html.RadioButton(Model.FilterName+"FilterMode","Blank", false) Blank
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#@divId').find('input').change(ef.filterCriteriaChanged);        
+    });
+</script>

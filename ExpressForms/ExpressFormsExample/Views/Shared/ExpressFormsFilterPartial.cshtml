@@ -1,0 +1,21 @@
+﻿@using ExpressForms.Buttons
+@using ExpressForms.Inputs
+@using System.Data.Objects.DataClasses
+@model ExpressForms.ExpressFormsFilterModel
+
+<div class='ExpressForms ExpressFormsFilterGroup'>
+    <table>
+        @* Write out the form inputs *@
+        @foreach (var kvp in Model.Filters)
+        {
+            <tr>
+                <td>
+                    @kvp.Value.FilterDisplayName
+                </td>
+                <td>
+                    @Html.Raw(kvp.Value.WriteFilter(Html, new {}))                
+                </td>
+            </tr>
+        }
+    </table>
+</div>
