@@ -3,17 +3,36 @@
     Layout = "~/Views/Shared/ExpressFormsFilters/_FilterLayout.cshtml";
 }
 
-@{string divId = "divFilter_" + Model.FilterName; }
+@{
+    string divId = "divFilter_" + Model.FilterName;
+    string autocompleteUrl = Url.Action("GetIndexFilterAutocompleteData");
+    bool autocompleteEnabled = true;
+    int autocompleteMaxmatches = 25;    
+}
 
-<div id='@divId'>
-    @Html.TextBox(Model.FilterName, "", new { @class = "ExpressFormsFilterText" })
-    @Html.RadioButton(Model.FilterName + "FilterMode", "StartsWith", true) Starts With
-    @Html.RadioButton(Model.FilterName+"FilterMode","Contains", false) Contains
-    @Html.RadioButton(Model.FilterName+"FilterMode","Blank", false) Blank
+<div id='@divId' class='ExpressFormsFilterTextDiv'>
+    @Html.DropDownList(Model.FilterName + "Mode", new SelectListItem[]
+        {           
+           new SelectListItem(){ Text= "Starts With", Value="Starts With"},
+           new SelectListItem(){ Text= "Contains", Value="Contains"},
+           new SelectListItem(){ Text= "Blank", Value="Blank"}             
+        }, "- All -", new object{})
+
+    @Html.TextBox(Model.FilterName, "", 
+        new {
+            @class = "ExpressFormsFilterText",
+            data_autocompleteurl = autocompleteUrl,
+            data_autocompleteenabled = autocompleteEnabled,
+            data_autocompletemaxmatches = autocompleteMaxmatches,
+            style = "display:none;"
+        })    
 </div>
 
 <script>
     $(document).ready(function () {
-        $('#@divId').find('input').change(ef.filterCriteriaChanged);        
+        // Wire up the change handler to update the data on the page.
+        $('#@divId').find('input')
+            .bind('change', ef.filterCriteriaChanged)
+            .bind('autocompletechange', ef.filterCriteriaChanged);
     });
 </script>

@@ -5,15 +5,17 @@
 
 @{string divId = "divFilter_" + Model.FilterName; }
 
-<div id='@divId' >
-    Minimum
-    @Html.TextBox(Model.FilterName + "MinDate", "", new { @class = "ExpressFormsFilterNumberMin" })
-    Maximum
-    @Html.TextBox(Model.FilterName + "MaxDate", "", new { @class = "ExpressFormsFilterNumberMax" })
-</div>
+<div id='@divId' class='ExpressFormsFilterNumberDiv' >
+    @Html.DropDownList(Model.FilterName + "Mode", new SelectListItem[]
+        {
+           new SelectListItem(){ Text = "At Least", Value="At Least"},
+           new SelectListItem(){ Text= "At Most", Value="At Most"},
+           new SelectListItem(){ Text= "Exactly", Value="Exactly"},
+           new SelectListItem(){ Text= "Between", Value="Between"}             
+        }, "- All -", new object{})
 
-<script>
-    $(document).ready(function () {
-        $('#@divId').find('input').change(ef.filterCriteriaChanged);
-    });
-</script>
+    
+    @Html.TextBox(Model.FilterName + "MinDate", "", new { @class = "divFilterInput0", style="display:none;" })
+    <span class='divFilterText' ></span>
+    @Html.TextBox(Model.FilterName + "MaxDate", "", new { @class = "divFilterInput1", style="display:none;" })
+</div>

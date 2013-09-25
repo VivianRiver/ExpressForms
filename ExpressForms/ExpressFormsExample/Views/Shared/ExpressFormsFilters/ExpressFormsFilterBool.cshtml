@@ -4,32 +4,33 @@
 }
 
 @{
-    string[] choices;
+    SelectListItem[] choices;
     if (Model.IsNullable)
     {
-        choices = new string[]
+        choices = new SelectListItem[]
         {
-            "True, False, and Null", "True and False", "True And Null", "False and Null", "True", "False", "Null"
-        };
-        
+            new SelectListItem() { Text="- All -", Value="truefalsenull"},
+            new SelectListItem() { Text="True and False", Value="truefalse"},
+            new SelectListItem() { Text="True And Null", Value="truenull"},
+            new SelectListItem() { Text="False and Null", Value="falsenull"},
+            new SelectListItem() { Text="True", Value="true"},
+            new SelectListItem() { Text="False", Value="false"},
+            new SelectListItem() { Text="Null", Value="null"}
+        };        
     }
     else
     {
-        choices = new string[]
+        choices = new SelectListItem[]
         {
-            "True and False", "True", "False"   
+            new SelectListItem() { Text="- All -", Value="truefalse"},                                    
+            new SelectListItem() { Text="True", Value="true"},
+            new SelectListItem() { Text="False", Value="false"},            
         };
     }
 }
 
 @{string divId = "divFilter_" + Model.FilterName; }
 
-<div id='@divId'>
-    @Html.DropDownList(Model.FilterName, choices.Select(choice => new SelectListItem() { Text=choice, Value=choice}), new { @class = "ExpressFormsFilterBool" })
+<div id='@divId' class='ExpressFormsFilterBoolDiv'>
+    @Html.DropDownList(Model.FilterName, choices, new { @class = "ExpressFormsFilterBool" })
 </div>
-
-<script>
-    $(document).ready(function () {
-        $('#@divId').find('input').change(ef.filterCriteriaChanged);
-    });
-</script>

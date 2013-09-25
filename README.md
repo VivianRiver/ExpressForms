@@ -6,6 +6,12 @@ For Fast and Easy Creation of CRUD Pages
 
 ============
 
+ExpressForms-0.7.1, released September 25, 2013, refines the filtering capability a bit and adds
+autocomplete to the text selections.  In the next release, I plan to add the functionality to
+turn the autocomplete on and off, as desired, plus the ability to plug in customized filters.
+
+***
+
 ExpressForms-0.7.0, released September 15, 2013 adds in sophisticated filtering with AJAX data.
 I had intended to expand the AJAX support to multiple extensions, but that's going to have to wait
 for another time.  I need the filtering for a project I'm working on, so that's the priority.
@@ -17,16 +23,6 @@ object is used to generate CIL code that reads the properties of your classes at
 is slow and incompatible with Entity Framework, which I use a lot.
 
 In the next release, I plan to give "Filters" the same customizability that "Inputs" have.
-
-***
-
-ExpressForms-0.6.1, released September 6, 2013, is primarily a bug-fix release.
-There was a bug that sometimes caused certain column of data to not display when using custom column headers.
-This is fixed.
-
-Also, the code that infers a key property has been modified so that in the absence of a key propery,
-ExpressForms will still display data, but won't update the data without the key.  This is useful when working
-with SQL views, for instance.
 
 ***
 

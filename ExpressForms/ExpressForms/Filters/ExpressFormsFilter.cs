@@ -8,7 +8,7 @@ using System.Reflection.Emit;
 
 namespace ExpressForms.Filters
 {
-    public abstract class ExpressFormsFilter
+    public abstract class ExpressFormsFilter        
     {
         public ExpressFormsFilter() { }
 
@@ -58,6 +58,8 @@ namespace ExpressForms.Filters
         /// The generated code should read the filter values and output code that will return false (0) when the
         /// record does not match.  If the record does match, then there should be no return statement and
         /// nothing on the execution stack when it finishes running.
+        /// When this method has been called on all filters, a call will be added on to the end to return true
+        /// if none of the other filters emitted code to return false.
         /// </summary>
         /// <param name="generator"></param>
         /// <param name="filterValues"></param>
@@ -70,7 +72,25 @@ namespace ExpressForms.Filters
         /// <param name="startingIndex"></param>
         /// <param name="endingIndex"></param>
         public abstract void GenerateFilterLocalDeclarations(ILGenerator generator, int startingIndex, out int endingIndex);   
-     
+                     
+        /// <summary>
+        /// Return a method that will tell whether or not a record matches a given filter to be used for autocomplete.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="filterValues"></param>
+        /// <param name="propertyToTest"></param>
+        /// <returns></returns>
+        public Func<T, bool> GetAutocompleteMatchesMethod<T>(Dictionary<string,string> filterValues, PropertyInfo propertyToTest)
+        {
+            DynamicMethod method = new DynamicMethod("GetFilterAutocompleteMatches", typeof(bool), new Type[] { typeof(T) });
+            ILGenerator generator = method.GetILGenerator();            
 
+            int lastIndex;
+            GenerateFilterLocalDeclarations(generator, 0, out lastIndex);
+            GenerateFilterIl(generator, filterValues, propertyToTest);
+            // If the code for the filter ran without returning false, return true.
+            generator.EmitReturnTrue();
+            return (Func<T, bool>)(method.CreateDelegate(typeof(Func<T, bool>)));
+        }
     }
 }

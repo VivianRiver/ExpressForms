@@ -22,7 +22,15 @@ namespace ExpressFormsExample.Controllers
             };
             CustomPropertyDisplay = new Dictionary<string, Func<NameAndCity, string>>()
             {
-                {"Middle_Name", r => r.Middle_Name.First().ToString() }
+                {"Middle_Name", r =>
+                    {
+                        string middleName = r.Middle_Name;
+                        if (string.IsNullOrWhiteSpace(middleName))
+                            return "";
+                        else
+                            return middleName.First().ToString();
+                    }
+                }
             };
             IndexFilterPlacement = ExpressForms.ExpressFormsIndexViewModel.FilterPlacementEnum.Top;
         }

@@ -88,7 +88,7 @@ namespace ExpressForms.Filters
                         generator.Emit(OpCodes.Brfalse, lblReturnFalse); // return false if the property is null
 
                         // the integer from the record.                        
-                        generator.EmitGetValueFromNullableProperty(property, 0);
+                        generator.EmitGetValueFromNullableProperty(property, storageIndex);
                         generator.Emit(OpCodes.Conv_I8); // convert to 64-bit integer
                         // the maximum integer
                         generator.Emit(OpCodes.Ldc_I8, Convert.ToInt64(maxNumberString));

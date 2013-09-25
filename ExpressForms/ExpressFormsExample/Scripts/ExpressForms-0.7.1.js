@@ -98,7 +98,7 @@
         }
     }
 
-    function filterCriteriaChanged() {
+    function filterCriteriaChanged() {        
         redrawAjaxTable();
     }
 

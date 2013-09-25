@@ -25,9 +25,7 @@ namespace ExpressForms.Extensions.jquery.dataTables
         {
             PropertyNames = propertyNames;
             SearchKey = request.QueryString["sSearch"];            
-        }
-
-        delegate bool FilterDelegate<T>(T t);
+        }                
         /// <summary>
         /// Get records filtered according to the data the user keyed into the filter form.
         /// </summary>        
@@ -76,8 +74,8 @@ namespace ExpressForms.Extensions.jquery.dataTables
             }
 
             generator.EmitReturnTrue();
-                                    
-            return ((FilterDelegate<T>)(method.CreateDelegate(typeof(FilterDelegate<T>)))).Invoke;
+
+            return (Func<T, bool>)(method.CreateDelegate(typeof(Func<T, bool>)));
         }
     }
 }

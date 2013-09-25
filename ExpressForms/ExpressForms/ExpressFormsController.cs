@@ -8,6 +8,7 @@ using ExpressForms.Inputs;
 using ExpressForms.Filters;
 using ExpressForms.IndexAjaxExtension;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Web.Script.Serialization;
 
 namespace ExpressForms
@@ -451,8 +452,36 @@ namespace ExpressForms
                 aaData = indexRecords.Select(x => x.FieldHtml)
             };
             return Json(retval, JsonRequestBehavior.AllowGet);
+        }  // end function GetAjax        
+
+        public JsonResult GetIndexFilterAutocompleteData(string fieldName, Dictionary<string, string> filterValues, int maxMatches)
+        {
+            PropertyInfo PropertyToTest = typeof(T).GetProperty(fieldName);
+            IEnumerable<T> matchingRecords = GetIndexFilterAutocompleteMatchingRecords(PropertyToTest, filterValues);               
+
+            DynamicMethod selector = new DynamicMethod("GetPropertyValue", typeof(object), new Type[] { typeof(T) });
+            ILGenerator generator = selector.GetILGenerator();
+            ExpressForms.Filters.IlGeneratorExtensions.EmitGetPropertyValueFromArgument(generator, PropertyToTest);
+            generator.Emit(OpCodes.Ret);
+
+            Func<T, object> GetPropertyFunc = (Func<T, object>)(selector.CreateDelegate(typeof(Func<T, object>)));
+
+            IEnumerable<object> result = matchingRecords.Select(GetPropertyFunc)
+                .Distinct()
+                .Take(maxMatches);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        private IEnumerable<T> GetIndexFilterAutocompleteMatchingRecords(PropertyInfo PropertyToTest, Dictionary<string,string> filterValues)
+        {            
+            ExpressForms.Filters.ExpressFormsFilter filter = GetIndexFilter(PropertyToTest);
+
+            Func<T, bool> autocompleteFunction = filter.GetAutocompleteMatchesMethod<T>(filterValues, PropertyToTest);
+            return Exchange.Get()
+                .Where(autocompleteFunction);               
+        }
+        
         #endregion
 
         #region helper methods
