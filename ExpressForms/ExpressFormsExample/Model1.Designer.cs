@@ -100,22 +100,6 @@ namespace ExpressFormsExample
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        public ObjectSet<NameAndCity> NameAndCities
-        {
-            get
-            {
-                if ((_NameAndCities == null))
-                {
-                    _NameAndCities = base.CreateObjectSet<NameAndCity>("NameAndCities");
-                }
-                return _NameAndCities;
-            }
-        }
-        private ObjectSet<NameAndCity> _NameAndCities;
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
         public ObjectSet<Month> Months
         {
             get
@@ -128,6 +112,22 @@ namespace ExpressFormsExample
             }
         }
         private ObjectSet<Month> _Months;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<NameAndCity> NameAndCities
+        {
+            get
+            {
+                if ((_NameAndCities == null))
+                {
+                    _NameAndCities = base.CreateObjectSet<NameAndCity>("NameAndCities");
+                }
+                return _NameAndCities;
+            }
+        }
+        private ObjectSet<NameAndCity> _NameAndCities;
 
         #endregion
 
@@ -150,19 +150,19 @@ namespace ExpressFormsExample
         }
     
         /// <summary>
-        /// Deprecated Method for adding a new object to the NameAndCities EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
-        /// </summary>
-        public void AddToNameAndCities(NameAndCity nameAndCity)
-        {
-            base.AddObject("NameAndCities", nameAndCity);
-        }
-    
-        /// <summary>
         /// Deprecated Method for adding a new object to the Months EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
         public void AddToMonths(Month month)
         {
             base.AddObject("Months", month);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the NameAndCities EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToNameAndCities(NameAndCity nameAndCity)
+        {
+            base.AddObject("NameAndCities", nameAndCity);
         }
 
         #endregion
@@ -605,6 +605,30 @@ namespace ExpressFormsExample
         private Nullable<global::System.Boolean> _CanChangeNumDays;
         partial void OnCanChangeNumDaysChanging(Nullable<global::System.Boolean> value);
         partial void OnCanChangeNumDaysChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.DateTime> USHoliday
+        {
+            get
+            {
+                return _USHoliday;
+            }
+            set
+            {
+                OnUSHolidayChanging(value);
+                ReportPropertyChanging("USHoliday");
+                _USHoliday = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("USHoliday");
+                OnUSHolidayChanged();
+            }
+        }
+        private Nullable<global::System.DateTime> _USHoliday;
+        partial void OnUSHolidayChanging(Nullable<global::System.DateTime> value);
+        partial void OnUSHolidayChanged();
 
         #endregion
 

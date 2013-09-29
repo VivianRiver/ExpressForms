@@ -13,6 +13,8 @@ namespace ExpressFormsExample.Controllers
             IndexAjaxExtension = new ExpressFormsDataTablesIndexAjaxExtension();
             IndexViewName = "jqueryDataTablesIndexView";
 
+            CustomPropertyDisplay["USHoliday"] = record => record.USHoliday.HasValue ? record.USHoliday.Value.ToString("yyyy/MM/dd") : "";
+
             IndexFilterPlacement = ExpressForms.ExpressFormsIndexViewModel.FilterPlacementEnum.Top;
         }
     }

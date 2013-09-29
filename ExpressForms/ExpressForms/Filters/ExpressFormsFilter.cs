@@ -33,6 +33,11 @@ namespace ExpressForms.Filters
         }
 
         /// <summary>
+        /// Whether or not autocomplete should be used with this filter;
+        /// </summary>
+        public bool UseAutocomplete { get; set; }
+
+        /// <summary>
         /// Adds to the HTML attributes the common attributes used by all filters regardless of type.
         /// This should be called from within the WriteInput implementation in all inherited classes.
         /// </summary>
@@ -44,6 +49,7 @@ namespace ExpressForms.Filters
             htmlAttributes.Add("data-name", this.FilterName);
             htmlAttributes.Add("data-filtername", this.FilterName);
             htmlAttributes.Add("data-type", this.GetFilterTypeName());
+            htmlAttributes.Add("data-useautocomplete", this.UseAutocomplete);
             htmlAttributes.Add("class", "ExpressForms");
         }        
 

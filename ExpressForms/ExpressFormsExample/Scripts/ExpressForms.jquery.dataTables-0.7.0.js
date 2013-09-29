@@ -17,7 +17,7 @@
             "bFilter": false,
             // This part tells ExpressForms to read the filter values and send them to the server.
             "fnServerParams": function (aoData, fnCallback) {
-                aoData.push({ name: 'ef_Filter', value: JSON.stringify(ef.readFilterCriteria()) });
+                aoData.push({ name: 'ef_Filter', value: JSON.stringify(ef.getFilterCriteria()) });
             }
         });
     }

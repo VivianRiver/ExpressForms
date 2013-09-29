@@ -28,12 +28,13 @@ namespace ExpressForms
             CustomPropertyDisplay = new Dictionary<string, Func<T, string>>();
             CustomEditorInputs = new Dictionary<string, ExpressFormsInput>();
             IgnoredPropertyNames = new string[] { };
+            DefaultIndexFilterAutocompleteMode = ExpressFormsIndexViewModel.DefaultIndexFilterAutocompleteModeEnum.Off;
             IndexFilterPlacement = ExpressFormsIndexViewModel.FilterPlacementEnum.None;
         }
 
         protected void Initialize(IExpressFormsExchange<T, TId> exchange)
         {
-            Exchange = exchange;                        
+            Exchange = exchange;
         }
 
         #region properties and functions that are used to customize the appearance and behavior of forms
@@ -120,6 +121,8 @@ namespace ExpressForms
 
             // If this property has an associated "CustomPropertyName", use that for the display name.  Otherwise, use the inputName.
             filter.FilterDisplayName = CustomPropertyNames.Keys.Contains(filter.FilterName) ? CustomPropertyNames[filter.FilterName] : filter.FilterName;
+            
+            filter.UseAutocomplete = DefaultIndexFilterAutocompleteMode == ExpressFormsIndexViewModel.DefaultIndexFilterAutocompleteModeEnum.On;
 
             return filter;
         }
@@ -264,6 +267,7 @@ namespace ExpressForms
             }
         }
         protected ExpressFormsIndexAjaxExtension IndexAjaxExtension { get; set; }
+        protected ExpressFormsIndexViewModel.DefaultIndexFilterAutocompleteModeEnum DefaultIndexFilterAutocompleteMode { get; set; }
         protected ExpressFormsIndexViewModel.FilterPlacementEnum IndexFilterPlacement { get; set; }
 
         protected string IndexViewName { get; set; }

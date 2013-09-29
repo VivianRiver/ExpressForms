@@ -166,6 +166,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\NameAndCity3Controller.cs" />
     <Compile Include="Controllers\Engineer0Controller.cs" />
     <Compile Include="Controllers\Engineer1Controller.cs" />
     <Compile Include="Controllers\Engineer2Controller.cs" />
@@ -173,6 +174,7 @@
     <Compile Include="Controllers\Engineer4Controller.cs" />
     <Compile Include="Controllers\Engineer5Controller.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\Month0Controller.cs" />
     <Compile Include="Controllers\NameAndCity0Controller.cs" />
     <Compile Include="Controllers\NameAndCity1Controller.cs" />
     <Compile Include="Controllers\NameAndCity2Controller.cs" />
@@ -520,17 +522,18 @@
     <Content Include="Scripts\ace\worker-lua.js" />
     <Content Include="Scripts\ace\worker-php.js" />
     <Content Include="Scripts\ace\worker-xquery.js" />
-    <Content Include="Scripts\ExpressForms-0.7.0.js" />
+    <Content Include="Scripts\ExpressForms-0.7.2.js" />
     <Content Include="Scripts\ExpressForms.Ace-0.5.js" />
     <Content Include="Scripts\ExpressForms.Buttons-0.6.0.js" />
-    <Content Include="Scripts\ExpressForms.Filters-0.7.0.js" />
-    <Content Include="Scripts\ExpressForms.Inputs-0.7.0.js" />
+    <Content Include="Scripts\ExpressForms.Filters-0.7.2.js" />
+    <Content Include="Scripts\ExpressForms.Inputs-0.7.2.js" />
     <Content Include="Scripts\ExpressForms.jquery.dataTables-0.7.0.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.js" />
     <Content Include="Scripts\jquery.dataTables\jquery.dataTables.js" />
     <Content Include="Scripts\jquery.dataTables\jquery.dataTables.min.js" />
     <Content Include="Scripts\jquery.dataTables\jquery.js" />
+    <Content Include="Scripts\json2.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

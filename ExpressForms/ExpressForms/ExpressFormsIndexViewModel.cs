@@ -28,10 +28,22 @@ namespace ExpressForms
         /// </summary>
         public Dictionary<string, Filters.ExpressFormsFilter> Filters { get; set; }
 
+        public DefaultIndexFilterAutocompleteModeEnum DefaultIndexFilterAutocompleteMode { get; set; }
+
         /// <summary>
         /// Tells where on the page the filter should be displayed (if at all)
         /// </summary>
         public FilterPlacementEnum FilterPlacement { get; set; }
+
+        /// <summary>
+        /// Whether or not index filters use autocomplete by default, where available.
+        /// This could have been boolean, but I wanted to leave this open for more options in the future.        
+        /// </summary>
+        public enum DefaultIndexFilterAutocompleteModeEnum : byte
+        {
+            Off = 0,
+            On = 1
+        }
 
         /// <summary>
         /// Where the filter should be displayed on the screen.

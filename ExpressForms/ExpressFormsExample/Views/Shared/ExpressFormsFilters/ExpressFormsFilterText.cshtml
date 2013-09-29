@@ -6,7 +6,7 @@
 @{
     string divId = "divFilter_" + Model.FilterName;
     string autocompleteUrl = Url.Action("GetIndexFilterAutocompleteData");
-    bool autocompleteEnabled = true;
+    bool autocompleteEnabled = Model.UseAutocomplete;
     int autocompleteMaxmatches = 25;    
 }
 

@@ -301,7 +301,7 @@
     To make it work, I just specified the placement of the filters on the page at the end of the NameAndCity2Controller constructor.
     To not use the filter, just omit the placement and it will default to hidden.
     <pre>
-        public class NameAndCity2Controller : BaseController&lt;NameAndCity&gt;
+    public class NameAndCity2Controller : BaseController&lt;NameAndCity&gt;
     {
         public NameAndCity2Controller()
             : base()
@@ -324,3 +324,44 @@
     }
     </pre>
 </p>
+
+<p>
+
+    @Html.ActionLink("NameAndCity3", "Index", "NameAndCity3")
+    <br />
+    The next example shows autocomplete in action.  This was added on September 29, 2013.  Right now, the autocomplete only works with the
+    text filter type used with column of strings.  Notice that the autocomplete recognizes whether to match values that start with a query
+    or that contain a query, as appropriate.
+    <br />
+    I added just a single line of code to the end of the controller constructor to turn it on.  It defaults to off.
+    <pre>
+    public class NameAndCity3Controller : BaseController&lt;NameAndCity&gt;
+    {
+        public NameAndCity3Controller()
+            : base()
+        {
+            IndexTitle = "Names And Cities";
+            IndexViewName = "jqueryDataTablesIndexView";
+            IndexAjaxExtension = new ExpressFormsDataTablesIndexAjaxExtension();
+            CustomPropertyNames = new Dictionary&lt;string, string&gt;()
+            {
+                {"First_Name", "First Name"},
+                {"Middle_Name", "Middle Initial"},
+                {"Last_Name", "Last Name"}
+            };
+            CustomPropertyDisplay = new Dictionary&lt;string, Func&lt;NameAndCity, string&gt;&gt;()
+            {
+                {"Middle_Name", r =&gt;
+                    {
+                        string middleName = r.Middle_Name;
+                        if (string.IsNullOrWhiteSpace(middleName))
+                            return "";
+                        else
+                            return middleName.First().ToString();
+                    }
+                }
+            };
+            IndexFilterPlacement = ExpressForms.ExpressFormsIndexViewModel.FilterPlacementEnum.Top;
+            DefaultIndexFilterAutocompleteMode = ExpressForms.ExpressFormsIndexViewModel.DefaultIndexFilterAutocompleteModeEnum.On;
+        }
+    }</pre>

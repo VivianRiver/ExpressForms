@@ -98,13 +98,16 @@
         }
     }
 
-    function filterCriteriaChanged() {        
+    function filterCriteriaChanged() {
         redrawAjaxTable();
+        setUrlFilter();
     }
 
     // Reads what the user entered into the filter forms.
     // It is expected that this function will be called by an AJAX extension to send the filter criteria to the server.
-    function readFilterCriteria() {
+    // When supressDefaultValues is true, only filters with non-default values will be returned.
+    // This is so that a smaller object can be saved to the URL without including filters that the user hasn't set.
+    function getFilterCriteria(supressDefaultValues) {
         var $filterElements, values;
         $filterElements = getFilterElements();
         values = {};
@@ -113,14 +116,39 @@
             $element = $(this);
             key = $element.attr('data-filtername');
             value = readSingleValueFromFilterGroup($element);
-            values[key] = value;
+            if (value !== null)
+                values[key] = value;
         });
         return values;
 
         function readSingleValueFromFilterGroup($element) {
+            var filterType, filterValue;
+            filterType = getFilterElementType($element);
+            filterValue = filters[filterType].getValue($element);
+            if (supressDefaultValues && filterValue.isDefaultValue()) {
+                return null;
+            } else {
+                return filters[filterType].getValue($element);
+            }
+        }
+    }
+
+    function setFilterCriteria(values) {
+        var $filterElements, values;
+        $filterElements = getFilterElements();
+        $filterElements.each(function () {            
+            var $element, key;
+            $element = $(this);
+            key = $element.attr('data-filtername');
+            // If values[key] doesn't exist, that means that we don't have a value for this filter, so just leave it with default values.
+            if (values[key])
+                writeSingleValueToFilterGroup($element, values[key]);
+        });
+
+        function writeSingleValueToFilterGroup($element, value) {
             var filterType;
             filterType = getFilterElementType($element);
-            return filters[filterType].getValue($element);
+            filters[filterType].setValue($element, value);
         }
     }
 
@@ -140,6 +168,38 @@
         if (!ajaxExtension)
             throw new Error('Cannot redraw table without ajax extension present.');
         ajaxExtension.redrawTable($table);
+    }
+
+    // Get the filter criteria from the URL.  This is used to set the initial state when the user hits the page with a filter URL.
+    // If there is no filter criteria in the URL, return null.
+    function getUrlFilter() {
+        var hashUrl, filterCriteria, filterCriteriaJson, filterCriteriaUrlEncoded;
+        hashUrl = window.location.hash;
+        if (hashUrl.length > 0) {
+            try {
+                filterCriteriaUrlEncoded = hashUrl.substring(2); // omit the leading "!#"
+                filterCriteriaJson = decodeURIComponent(filterCriteriaUrlEncoded);
+                filterCriteria = JSON.parse(filterCriteriaJson);                
+                return filterCriteria;
+            }
+            catch (e) {
+                // If the URL couldn't be parsed, return null
+                alert(e);
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    // When an AJAX extension is present, set a URL containing the filter criterea each time the filter is changed.
+    // Will omit filters than have the default criteria (to avoid unecessarily long URLs).
+    function setUrlFilter() {        
+        var filterCriteria, filterCriteriaJson, filterCriteriaUrlEncoded;
+        filterCriteria = getFilterCriteria(true);
+        filterCriteriaJson = JSON.stringify(filterCriteria);
+        filterCriteriaUrlEncoded = encodeURIComponent(filterCriteriaJson);
+        window.location.hash = '!' + filterCriteriaUrlEncoded;
     }
 
     function registerInputFormIO(io) {
@@ -168,12 +228,21 @@
     $(document).ready(function () {
         // When the document is ready, load the table into memory to be used with the ajax extension (if any)
         // and set up all button handlers.                
+        // Also, if there is one available from, set the filter criteria from the filter URL.
+
+        var urlFilter;
 
         resetButtonHandlers();
 
         if (ajaxExtension) {
             $table = $('.ExpressFormsTableContainer').find('table');
             ajaxExtension.initTable($table);
+        }
+
+        urlFilter = getUrlFilter();
+        if (urlFilter) {
+            setFilterCriteria(urlFilter);
+            filterCriteriaChanged();
         }
     });
 
@@ -186,8 +255,11 @@
         readFromForm: readFromForm,
         writeToForm: writeToForm,
         resetButtonHandlers: resetButtonHandlers,
+        getUrlFilter: getUrlFilter,
+        setUrlFilter: setUrlFilter,
         filterCriteriaChanged: filterCriteriaChanged,
-        readFilterCriteria: readFilterCriteria,
+        getFilterCriteria: getFilterCriteria,
+        setFilterCriteria: setFilterCriteria,
         redrawAjaxTable: redrawAjaxTable,
         ajaxExtension: ajaxExtension
     };

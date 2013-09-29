@@ -7,6 +7,6 @@ namespace ExpressForms
 {
     public static class Common
     {
-        public static string[] PropertiesToIgnore { get { return new[] { "EntityState", "EntityKey" }; } }
+        
     }
 }

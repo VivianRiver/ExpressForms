@@ -17,6 +17,10 @@ namespace ExpressFormsExample
             bundles.Add(new ScriptBundle("~/bundles/jquery-ui").Include(
                 "~/Scripts/jquery-ui-{version}.js"));
 
+            // json
+            bundles.Add(new ScriptBundle("~/bundles/json").Include(
+                "~/Scripts/json2.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/ExpressForms").Include(
                 new[] {
                     "~/Scripts/ExpressForms-{version}.js",
