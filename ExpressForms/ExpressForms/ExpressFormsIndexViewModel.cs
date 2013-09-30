@@ -36,6 +36,11 @@ namespace ExpressForms
         public FilterPlacementEnum FilterPlacement { get; set; }
 
         /// <summary>
+        /// The .net type of the records on the page.
+        /// </summary>
+        public Type RecordType { get; set; }
+
+        /// <summary>
         /// Whether or not index filters use autocomplete by default, where available.
         /// This could have been boolean, but I wanted to leave this open for more options in the future.        
         /// </summary>

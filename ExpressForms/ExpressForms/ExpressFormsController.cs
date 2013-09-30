@@ -303,7 +303,8 @@ namespace ExpressForms
                 IndexHeader = indexHeader,
                 IndexRecords = indexRecords,
                 Filters = GetIndexFilters(),
-                FilterPlacement = IndexFilterPlacement
+                FilterPlacement = IndexFilterPlacement,
+                RecordType = typeof(T)
             };
 
             return View(IndexViewName, model);
