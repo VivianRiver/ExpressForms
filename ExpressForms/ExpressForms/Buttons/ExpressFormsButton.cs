@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace ExpressForms.Buttons
 {
-    public abstract class ExpressFormsButton
+    public abstract class ExpressFormsButton<T, TId>
     {
         public ExpressFormsButton()
         {
@@ -25,7 +25,14 @@ namespace ExpressForms.Buttons
         /// </summary>
         public string Text { get; set; }
 
-        
+        /// <summary>
+        /// A function that is called once per record in the ExpressFormsIndexRecord class.
+        /// It adds values to the button object that are specific to each record.
+        /// </summary>
+        /// <param name="record"></param>
+        /// <param name="id"></param>
+        public abstract void InitializeWithRecord(T record, TId id);
+
         /// <summary>
         /// gets the HTML of this button to put in an HTML document
         /// </summary>        

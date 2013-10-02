@@ -7,7 +7,7 @@ using System.Web.Routing;
 
 namespace ExpressForms.Buttons
 {
-    public class ExpressFormsEditButton : ExpressFormsButton
+    public class ExpressFormsEditButton<T, TId> : ExpressFormsButton<T, TId>
     {
         public ExpressFormsEditButton()
         {
@@ -16,6 +16,11 @@ namespace ExpressForms.Buttons
         
         public string LinkUrl { get; set; }
         public Dictionary<string, string> Parameters { get; set; }
+
+        public override void InitializeWithRecord(T record, TId id)
+        {
+            Parameters["Id"] = Convert.ToString(id);
+        }
 
         public override MvcHtmlString WriteButton(HtmlHelper helper, object htmlAttributes)
         {
@@ -48,6 +53,6 @@ namespace ExpressForms.Buttons
                 tb.MergeAttribute(kvp.Key, Convert.ToString(kvp.Value));
 
             return new MvcHtmlString(tb.ToString(TagRenderMode.SelfClosing));
-        }
+        }        
     }
 }

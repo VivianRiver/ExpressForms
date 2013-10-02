@@ -15,14 +15,14 @@ namespace ExpressForms
     /// </summary>    
     public class ExpressFormsIndexRecord
     {        
-        public void Initialize<T>(T record, string idPropertyName, string[] propertyNames, IEnumerable<ExpressFormsButton> buttons, Dictionary<string, Func<T, string>> customPropertyDisplay, ControllerContext controllerContext)
+        public void Initialize<T, TId>(T record, TId id, string[] propertyNames, IEnumerable<ExpressFormsButton<T,TId>> buttons, Dictionary<string, Func<T, string>> customPropertyDisplay, ControllerContext controllerContext)
         {
             // This class is going to render some HTML directly.  Some folks think that's bad practice, but it's what I'm doing.
             HtmlHelper htmlHelper = new HtmlHelper(new ViewContext(controllerContext, new WebFormView(controllerContext, "whatever"), new ViewDataDictionary(), new TempDataDictionary(), new System.IO.StringWriter()), new ViewPage());
-            Initialize<T>(record, idPropertyName, propertyNames, buttons, customPropertyDisplay, htmlHelper);
+            Initialize<T, TId>(record, id, propertyNames, buttons, customPropertyDisplay, htmlHelper);
         }
 
-        public void Initialize<T>(T record, string idPropertyName, string[] propertyNames, IEnumerable<ExpressFormsButton> buttons, Dictionary<string, Func<T, string>> customPropertyDisplay, HtmlHelper htmlHelper)
+        public void Initialize<T, TId>(T record, TId id, string[] propertyNames, IEnumerable<ExpressFormsButton<T,TId>> buttons, Dictionary<string, Func<T, string>> customPropertyDisplay, HtmlHelper htmlHelper)
         {            
             this.HtmlHelper = htmlHelper;
             
@@ -40,32 +40,16 @@ namespace ExpressForms
                 else
                     return HtmlHelper.Encode(p.GetValue(record, null));
             }).ToList();
-            
-            // If the class has a single valid ID property, use it to initialize [Edit] and [Remove] buttons.
-            // If none is found, then skip over this and print no buttons.
-            IEnumerable<PropertyInfo> idProperties = Properties
-                .Where(p => p.Name == idPropertyName);
-            if (idProperties.Count() == 1)
+                        
+            if (id != null)
             {
-                Id = Convert.ToString(Properties
-                    .Single(p => p.Name == idPropertyName)
-                    .GetValue(record, null));
+                IdString = Convert.ToString(id);                    
 
                 // This gets the HTML for the buttons to display.
+                // It initializes each button with the values from the record and then writes it.
                 IEnumerable<string> buttonHtmlList = buttons.Select(b =>
                 {
-                    // This is ugly as sin.
-                    // TODO: FIX THIS!
-                    if (b.GetType().ToString() == typeof(ExpressFormsModifyDataButton).ToString())
-                    {
-                        ((ExpressFormsModifyDataButton)(b)).IdForDeletion = Convert.ToInt32(Id);
-                    }
-                    // If this is an "edit" button , add in the ID
-                    if (b.GetType().ToString() == typeof(ExpressFormsEditButton).ToString())
-                    {
-                        ((ExpressFormsEditButton)(b)).Parameters["Id"] = Id;
-                    }
-
+                    b.InitializeWithRecord(record, id);                                       
                     return b.WriteButton(HtmlHelper, new object { }).ToString();
                 });
                 FieldHtml = fieldHtmlList.Concat(buttonHtmlList);
@@ -90,7 +74,7 @@ namespace ExpressForms
         /// <summary>
         /// The string representation of a unique identifier for the record.
         /// </summary>
-        public string Id { get; set; }
+        public string IdString { get; private set; }
 
         /// <summary>
         /// An array of strings representing the HTML to print for each column for this record.

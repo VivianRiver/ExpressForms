@@ -1,4 +1,4 @@
-﻿ @using ExpressForms.Buttons
+﻿@using ExpressForms.Buttons
 @using ExpressForms.Inputs
 @using System.Data.Objects.DataClasses
 @model ExpressForms.ExpressFormsEditorModel
@@ -21,9 +21,9 @@
 
 <div>        
     @* Write out the form buttons *@
-    @foreach (ExpressFormsButton button in Model.Buttons)
+    @foreach (string html in Model.ButtonHtml)
     {                    
-        @Html.WriteButton(button, new { })        
+        @Html.Raw(html)
     }    
 </div>
 

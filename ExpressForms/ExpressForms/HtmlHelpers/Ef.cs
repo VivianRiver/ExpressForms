@@ -66,7 +66,7 @@ namespace System.Web.Mvc
             sb.AppendLine("<tbody>");
             foreach (ExpressFormsIndexRecord indexRecord in indexRecords)
             {
-                sb.AppendLine(string.Format("<tr data-rowid='{0}'>", helper.Encode(indexRecord.Id)));
+                sb.AppendLine(string.Format("<tr data-rowid='{0}'>", helper.Encode(indexRecord.IdString)));
                 foreach (string html in indexRecord.FieldHtml)
                 {
                     sb.AppendFormat(dataFormat, html);
@@ -79,10 +79,10 @@ namespace System.Web.Mvc
         #endregion
 
         #region methods that print buttons
-        public static MvcHtmlString WriteButton(this HtmlHelper helper, ExpressForms.Buttons.ExpressFormsButton button, object htmlAttributes)
-        {            
-            return button.WriteButton(helper, htmlAttributes);
-        }                             
+        //public static MvcHtmlString WriteButton(this HtmlHelper helper, ExpressForms.Buttons.ExpressFormsButton button, object htmlAttributes)
+        //{            
+        //    return button.WriteButton(helper, htmlAttributes);
+        //}                             
         #endregion
     }
 }

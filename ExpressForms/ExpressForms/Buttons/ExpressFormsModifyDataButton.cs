@@ -10,8 +10,8 @@ namespace ExpressForms.Buttons
     /// <summary>
     /// A button that the user clicks to post data on a form to the server and modify data server-side.
     /// InsertExpressFormsButton, UpdateExpressFormsButton, and DeleteExpressFormsButton all inherit this class.
-    /// </summary>
-    public class ExpressFormsModifyDataButton : ExpressFormsButton
+    /// </summary>    
+    public class ExpressFormsModifyDataButton<T, TId> : ExpressFormsButton<T, TId>
     {
         public ExpressFormsModifyDataButton()
             : base()
@@ -43,14 +43,19 @@ namespace ExpressForms.Buttons
 
         #region data for deleting a record without the editor window open
         /// <summary>
-        /// The ID of the row to delete from SQL
+        /// The ID of the row to delete from the data source
         /// </summary>
-        public int IdForDeletion { get; set; }
+        public TId IdForDeletion { get; set; }
         /// <summary>
         /// The ID of the table that contains the row to remove from the DOM.
         /// </summary>
         public string TableIdForDeletion { get; set; }
         #endregion
+
+        public override void InitializeWithRecord(T record, TId id)
+        {
+            IdForDeletion = id;
+        }
 
         public override MvcHtmlString WriteButton(HtmlHelper helper, object htmlAttributes)
         {

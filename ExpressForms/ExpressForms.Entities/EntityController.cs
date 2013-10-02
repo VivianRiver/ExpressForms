@@ -9,7 +9,7 @@ using ExpressForms.Inputs;
 
 namespace ExpressForms.Entities
 {
-    public abstract class EntityController<TEntity> : ExpressForms.ExpressFormsController<TEntity, int?>
+    public abstract class EntityController<TEntity> : ExpressForms.ExpressFormsController<TEntity, int>
         where TEntity : EntityObject, new()
     {
         public EntityController()
@@ -20,7 +20,7 @@ namespace ExpressForms.Entities
 
         protected void Initialize(ObjectContext objectContext)
         {            
-            EntityExchange<TEntity, int?> exchange = EntityExchangeFactory.GetEntityExchange<TEntity, int?>(objectContext);
+            EntityExchange<TEntity, int> exchange = EntityExchangeFactory.GetEntityExchange<TEntity, int>(objectContext);
             
             Initialize(exchange);
         }

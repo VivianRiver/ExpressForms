@@ -11,14 +11,14 @@ namespace ExpressForms
 {
     public class ExpressFormsIndexHeader
     {
-        public void Initialize(string[] propertyNames, IEnumerable<ExpressFormsButton> buttons, ControllerContext controllerContext)
+        public void Initialize<T, TId>(string[] propertyNames, IEnumerable<ExpressFormsButton<T, TId>> buttons, ControllerContext controllerContext)
         {
             // This class is going to render some HTML directly.  Some folks think that's bad practice, but it's what I'm doing.
             HtmlHelper htmlHelper = new HtmlHelper(new ViewContext(controllerContext, new WebFormView(controllerContext, "whatever"), new ViewDataDictionary(), new TempDataDictionary(), new System.IO.StringWriter()), new ViewPage());
             Initialize(propertyNames, buttons, htmlHelper);
         }
 
-        public void Initialize(string[] propertyNames, IEnumerable<ExpressFormsButton> buttons, HtmlHelper htmlHelper)
+        public void Initialize<T, TId>(string[] propertyNames, IEnumerable<ExpressFormsButton<T, TId>> buttons, HtmlHelper htmlHelper)
         {
             this.HtmlHelper = htmlHelper;            
 

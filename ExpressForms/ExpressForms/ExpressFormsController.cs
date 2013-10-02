@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using ExpressForms.Buttons;
 using ExpressForms.Inputs;
 using ExpressForms.Filters;
+using ExpressForms.Utility;
 using ExpressForms.IndexAjaxExtension;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -133,29 +135,29 @@ namespace ExpressForms
         /// </summary>
         /// <param name="model"></param>        
         /// <param name="isNew"></param>
-        protected virtual ExpressFormsButton[] GetEditorButtons(bool isNew)
+        protected virtual ExpressFormsButton<T, TId>[] GetEditorButtons(bool isNew)
         {
-            List<ExpressFormsButton> buttons = new List<ExpressFormsButton>()
+            List<ExpressFormsButton<T, TId>> buttons = new List<ExpressFormsButton<T, TId>>()
             {
-                new ExpressFormsModifyDataButton()
+                new ExpressFormsModifyDataButton<T, TId>()
                 {
                     // If the user is inserting a new record, show the user an [Insert] button.    
                     IsVisible = isNew,
                     Text = "Save",
                     FormName = FormName,
-                    ActionType = ExpressFormsModifyDataButton.ActionTypeEnum.Insert,
+                    ActionType = ExpressFormsModifyDataButton<T, TId>.ActionTypeEnum.Insert,
                     PostUrl = Url.Action("Postback"),
-                    PostType = ExpressFormsModifyDataButton.PostTypeEnum.Ajax
+                    PostType = ExpressFormsModifyDataButton<T, TId>.PostTypeEnum.Ajax
                 },
-                new ExpressFormsModifyDataButton()
+                new ExpressFormsModifyDataButton<T, TId>()
                 {
                     // If the user is updating an existing record, show the user an [Update] button.
                     IsVisible = !isNew,
                     Text = "Save",
                     FormName = FormName,
-                    ActionType = ExpressFormsModifyDataButton.ActionTypeEnum.Update,
+                    ActionType = ExpressFormsModifyDataButton<T, TId>.ActionTypeEnum.Update,
                     PostUrl = Url.Action("Postback"),
-                    PostType = ExpressFormsModifyDataButton.PostTypeEnum.Ajax
+                    PostType = ExpressFormsModifyDataButton<T, TId>.PostTypeEnum.Ajax
                 }                
             };
             return buttons.ToArray();
@@ -239,27 +241,30 @@ namespace ExpressForms
         protected Dictionary<string, string> CustomPropertyNames { get; set; }
         protected IEnumerable<string> IgnoredPropertyNames { get; set; }
         protected Dictionary<string, Func<T, string>> CustomPropertyDisplay { get; set; }
-        private ExpressFormsButton[] _indexButtons;
-        protected ExpressFormsButton[] IndexButtons
+        private List<ExpressFormsButton<T, TId>> _indexButtons;
+        protected List<ExpressFormsButton<T, TId>> IndexButtons
         {
             get
             {
-                // By default, the Index page shows an [Edit] button and a [Remove] button for each row.
-                return _indexButtons ??                
-                new ExpressForms.Buttons.ExpressFormsButton[]
+                if (_indexButtons == null)
                 {
-                    new ExpressForms.Buttons.ExpressFormsEditButton() {
-                        Text = "Edit",
-                        LinkUrl = Url.Action("Editor"),            
-                    },    
-                    new ExpressForms.Buttons.ExpressFormsModifyDataButton() {
-                        Text = "Remove",
-                        PostUrl = Url.Action("Postback"),
-                        TableIdForDeletion = typeof(T).Name,
-                        ActionType = ExpressForms.Buttons.ExpressFormsModifyDataButton.ActionTypeEnum.Delete,
-                        PostType = ExpressForms.Buttons.ExpressFormsModifyDataButton.PostTypeEnum.Ajax
-                    }
-                };   
+                    _indexButtons =
+                    new List<ExpressForms.Buttons.ExpressFormsButton<T, TId>>
+                    {
+                        new ExpressForms.Buttons.ExpressFormsEditButton<T, TId>() {
+                            Text = "Edit",
+                            LinkUrl = Url.Action("EditExisting"),            
+                        },    
+                        new ExpressForms.Buttons.ExpressFormsModifyDataButton<T, TId>() {
+                            Text = "Remove",
+                            PostUrl = Url.Action("Postback"),
+                            TableIdForDeletion = typeof(T).Name,
+                            ActionType = ExpressForms.Buttons.ExpressFormsModifyDataButton<T, TId>.ActionTypeEnum.Delete,
+                            PostType = ExpressForms.Buttons.ExpressFormsModifyDataButton<T, TId>.PostTypeEnum.Ajax
+                        }
+                    };
+                }
+                return _indexButtons;
             }
             set
             {
@@ -292,14 +297,14 @@ namespace ExpressForms
                 .Select(r =>
                 {
                     ExpressFormsIndexRecord indexRecord = new ExpressFormsIndexRecord();
-                    indexRecord.Initialize<T>(r, "Id", propertyNames, IndexButtons, CustomPropertyDisplay, ControllerContext);
+                    indexRecord.Initialize<T, TId>(r, GetIdFromRecord(r), propertyNames, IndexButtons, CustomPropertyDisplay, ControllerContext);
                     return indexRecord;
                 });
 
             ExpressFormsIndexViewModel model = new ExpressFormsIndexViewModel()
             {                
                 Title = IndexTitle == null ? typeof(T).Name : IndexTitle,
-                GetAjaxUrl = Url.Action("GetAjax"),
+                GetAjaxUrl = Url.Action("GetAjax", QueryStringUtility.CurrentQueryStringAsRouteValues), // pass the query string values in the URL in case they are needed to retrieve data.
                 IndexHeader = indexHeader,
                 IndexRecords = indexRecords,
                 Filters = GetIndexFilters(),
@@ -311,22 +316,51 @@ namespace ExpressForms
         }
 
         /// <summary>
-        /// Returns a ViewResult to display an "Editor" form from which the user can insert or update data.
+        /// Returns a ViewResult to display an "Editor" form from which the user can update data.
+        /// Note that the parameterless version shows a blank form to insert a new record.
         /// </summary>
-        /// <param name="id">the ID of the row to update; if null, the user may insert a new row.</param>        
-        public virtual ActionResult Editor(TId id)
-        {            
-            T record = (id == null) ? new T() : Exchange.Get(id);
-            bool isNew = id == null;
-
+        /// <returns></returns>
+        public virtual ActionResult EditNew()
+        {
+            HtmlHelper helper = new HtmlHelper(new ViewContext(ControllerContext, new WebFormView(ControllerContext, "omg"), new ViewDataDictionary(), new TempDataDictionary(), new System.IO.StringWriter()), new ViewPage());
+            bool isNew = true;
+            T record = new T();
+            List<string> buttonHtmlList = new List<string>();
+            foreach(ExpressFormsButton<T, TId> button in GetEditorButtons(isNew))
+            {
+                buttonHtmlList.Add(button.WriteButton(helper, new object{}).ToString());
+            }
             ExpressFormsEditorModel model = new ExpressFormsEditorModel()
             {
                 Record = record,
                 IsNew = isNew,
-                Buttons = GetEditorButtons(isNew),
-                Inputs = GetEditorInputs(record)                
-            };
+                Inputs = GetEditorInputs(record),
+                ButtonHtml = buttonHtmlList.ToArray()
+            };                        
+            return View(EditorViewName, model);
+        }
 
+        /// <summary>
+        /// Returns a ViewResult to display an "Editor" form from which the user can update data.        
+        /// </summary>
+        /// <param name="id">the ID of the row to update; if null, the user may insert a new row.</param>        
+        public virtual ActionResult EditExisting(TId id)
+        {
+            HtmlHelper helper = new HtmlHelper(new ViewContext(ControllerContext, new WebFormView(ControllerContext, "omg"), new ViewDataDictionary(), new TempDataDictionary(), new System.IO.StringWriter()), new ViewPage());
+            bool isNew = false;
+            T record = Exchange.Get(id);
+            List<string> buttonHtmlList = new List<string>();
+            foreach (ExpressFormsButton<T, TId> button in GetEditorButtons(isNew))
+            {
+                buttonHtmlList.Add(button.WriteButton(helper, new object { }).ToString());
+            }
+            ExpressFormsEditorModel model = new ExpressFormsEditorModel()
+            {
+                Record = record,
+                IsNew = isNew,                
+                Inputs = GetEditorInputs(record),
+                ButtonHtml = buttonHtmlList.ToArray()
+            };
             return View(EditorViewName, model);
         }
         #endregion                
@@ -362,9 +396,8 @@ namespace ExpressForms
                 case "UPDATE":
                     result = Update(record);
                     break;
-                case "DELETE":
-                    // TODO: This depends on the ID field being called "Id".  This needs to be fixed so that the ID is properly looked up.
-                    TId id = (TId)(((dynamic)(record)).Id);
+                case "DELETE":                    
+                    TId id = GetIdFromRecord(record); //(TId)(((dynamic)(record)).Id);
                     result = Delete(id);
                     break;
             }
@@ -446,7 +479,7 @@ namespace ExpressForms
                 pageOfRecords.Select(r =>
                 {
                     ExpressFormsIndexRecord indexRecord = new ExpressFormsIndexRecord();
-                    indexRecord.Initialize<T>(r, "Id", propertyNames, IndexButtons, CustomPropertyDisplay, ControllerContext);
+                    indexRecord.Initialize<T, TId>(r, GetIdFromRecord(r), propertyNames, IndexButtons, CustomPropertyDisplay, ControllerContext);
                     return indexRecord;
                 });
 
@@ -523,6 +556,54 @@ namespace ExpressForms
             string name = property.Name;
             string columnName = CustomPropertyNames.Keys.Contains(name) ? CustomPropertyNames[name] : property.Name;
             return columnName;
+        }
+
+        /// <summary>
+        /// Returns the Id of a record for the data source.
+        /// By default, this will return the value of the property called "Id".
+        /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
+        protected virtual TId GetIdFromRecord(T record)
+        {
+            TId result = idPropertyGetter(record);
+            return result;            
+        }
+
+        private Func<T, TId> _idPropertyGetter;
+        /// <summary>
+        /// This dynamically builds a function to get the Id property on the fly and then caches it in the field _idPropertyGetter.
+        /// If there is no Id property, then the function will try to return something valid.
+        /// </summary>
+        private Func<T, TId> idPropertyGetter
+        {
+            get
+            {
+                if (_idPropertyGetter == null)
+                {                    
+                    DynamicMethod selector = new DynamicMethod("GetIndexValue", typeof(TId), new Type[] { typeof(T) });
+                    ILGenerator generator = selector.GetILGenerator();
+
+                    PropertyInfo idProperty = typeof(T).GetProperty("Id");
+                    if (idProperty != null)
+                    {
+                        ExpressForms.Filters.IlGeneratorExtensions.EmitGetPropertyValueFromArgument(generator, idProperty);                        
+                    }
+                    else
+                    {
+                        if (typeof(TId) == typeof(string))
+                            generator.Emit(OpCodes.Ldnull);
+                        else if (typeof(TId) == typeof(Nullable<>))
+                            generator.Emit(OpCodes.Ldnull);
+                        else
+                            generator.Emit(OpCodes.Ldc_I4_0);
+                    }
+                    generator.Emit(OpCodes.Ret);
+
+                    _idPropertyGetter = (Func<T, TId>)(selector.CreateDelegate(typeof(Func<T, TId>)));
+                }
+                return _idPropertyGetter;
+            }
         }
         #endregion #region methods
     }
