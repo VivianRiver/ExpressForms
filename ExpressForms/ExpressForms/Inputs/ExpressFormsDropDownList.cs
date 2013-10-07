@@ -19,8 +19,18 @@ namespace ExpressForms.Inputs
         public override MvcHtmlString WriteInput(HtmlHelper helper, object htmlAttributes)
         {
             IDictionary<string, object> efHtmlAttributes = new RouteValueDictionary(htmlAttributes);
-            AddCommonHtmlAttributes(efHtmlAttributes);
-            return helper.DropDownList(this.InputName, this.SelectListItems, efHtmlAttributes);
+            AddCommonHtmlAttributes(efHtmlAttributes);            
+
+            // Make sure that the select list item matching the Value property is selected before rending the list.
+            IEnumerable<SelectListItem> selectListItems = this.SelectListItems.Select(x =>
+                new SelectListItem()
+                {
+                    Text = x.Text,
+                    Value = x.Value,
+                    Selected = x.Value == Value
+                });
+
+            return helper.DropDownList(this.InputName, selectListItems, efHtmlAttributes);
         }
     }
 }

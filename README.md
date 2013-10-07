@@ -6,6 +6,20 @@ For Fast and Easy Creation of CRUD Pages
 
 ============
 
+I haven't been updating this file regularly, so I missed a few minor revisions.
+ExpressForms-0.8.1, released October 7, 2013, fixes an issue where the ExpressFormsDropDownList doesn't default
+to the current value for a record.
+
+ExpressForms-0.8.0 features an extensive rewrite of the code that displays the buttons on the
+index page.  This fixed some of the issues where only a 32-bit integer could be used for ID
+because it was hardcoded to use a 32-bit integer in this code.  I haven't extensively tested
+with other ID types, but they should work soon!  The main feature here is a new abstract
+function called InitializeWithRecord on the ExpressFormsButton object.  This function gets called
+and passed each record on the index page, so the appearance and behavior of the button can
+be customized.
+
+***
+
 ExpressForms-0.7.1, released September 25, 2013, refines the filtering capability a bit and adds
 autocomplete to the text selections.  In the next release, I plan to add the functionality to
 turn the autocomplete on and off, as desired, plus the ability to plug in customized filters.

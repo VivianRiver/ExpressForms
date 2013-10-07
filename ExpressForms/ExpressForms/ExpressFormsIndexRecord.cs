@@ -39,7 +39,7 @@ namespace ExpressForms
                     return customPropertyDisplay[p.Name].Invoke(record);
                 else
                     return HtmlHelper.Encode(p.GetValue(record, null));
-            }).ToList();
+            });//.ToList();
                         
             if (id != null)
             {
