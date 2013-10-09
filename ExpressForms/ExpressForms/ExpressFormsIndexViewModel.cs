@@ -9,8 +9,15 @@ namespace ExpressForms
     public class ExpressFormsIndexViewModel
     {        
         public string Title { get; set; }
-
+        
+        /// <summary>
+        /// The URL from which to load the table data using AJAX
+        /// </summary>
         public string GetAjaxUrl { get; set; }
+        /// <summary>
+        /// The URL from which to get autocomplete matches using AJAX
+        /// </summary>
+        public string GetIndexFilterAutocompleteDataUrl { get; set; }
 
         /// <summary>
         /// Contains the HTML for each column header

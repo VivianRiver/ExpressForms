@@ -4,8 +4,7 @@
 }
 
 @{
-    string divId = "divFilter_" + Model.FilterName;
-    string autocompleteUrl = Url.Action("GetIndexFilterAutocompleteData");
+    string divId = "divFilter_" + Model.FilterName;    
     bool autocompleteEnabled = Model.UseAutocomplete;
     int autocompleteMaxmatches = 25;    
 }
@@ -14,14 +13,17 @@
     @Html.DropDownList(Model.FilterName + "Mode", new SelectListItem[]
         {           
            new SelectListItem(){ Text= "Starts With", Value="Starts With"},
+           new SelectListItem(){ Text= "Doesn't Start With", Value="Doesn't Start With"},
            new SelectListItem(){ Text= "Contains", Value="Contains"},
-           new SelectListItem(){ Text= "Blank", Value="Blank"}             
+           new SelectListItem(){ Text= "Doesn't Contain", Value="Doesn't Contain"},
+           new SelectListItem(){ Text= "Is Blank", Value="Is Blank"},
+           new SelectListItem(){ Text= "Isn't Blank", Value="Isn't Blank"}
+           
         }, "- All -", new object{})
 
     @Html.TextBox(Model.FilterName, "", 
         new {
-            @class = "ExpressFormsFilterText",
-            data_autocompleteurl = autocompleteUrl,
+            @class = "ExpressFormsFilterText",             
             data_autocompleteenabled = autocompleteEnabled,
             data_autocompletemaxmatches = autocompleteMaxmatches,
             style = "display:none;"

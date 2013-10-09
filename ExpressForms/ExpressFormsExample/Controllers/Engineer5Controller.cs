@@ -26,6 +26,7 @@ namespace ExpressFormsExample.Controllers
                 {
                     new SelectListItem() { Value="csharp", Text="C#"},
                     new SelectListItem() { Value="javascript", Text="Javascript"},
+                    new SelectListItem() { Value="ruby", Text="Ruby"},
                     new SelectListItem() { Value="html", Text="HTML"},
                     new SelectListItem() { Value="xml", Text="XML"}
                 }

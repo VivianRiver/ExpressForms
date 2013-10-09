@@ -49,15 +49,14 @@ namespace ExpressForms.Filters
             string filterText = filterValues["filterText"];
             string filterMode = filterValues["filterMode"];
 
-            // Do nothing for this property is the filterText is blank and the filterMode is "Starts With" or "Contains"
-            if (string.IsNullOrWhiteSpace(filterText) && new string[] { "Starts With", "Contains" }.Contains(filterMode))
+            // Do nothing for this property is the filterText is blank and the filterMode is "Starts With", "Doesn't Start With", "Contains", or " Doesn't Contain"
+            if (string.IsNullOrWhiteSpace(filterText) && new string[] { "Starts With", "Doesn't Start With", "Contains", "Doesn't Contain" }.Contains(filterMode))
                 return;
 
             switch (filterMode)
             {
                 case "Starts With":
                 case "Contains":
-
                     // Check that the property is not null.  If it is null, return false; otherwise, continue.
                     generator.EmitGetPropertyValueFromArgument(property);
                     generator.Emit(OpCodes.Brtrue, lblNotNull);
@@ -74,12 +73,37 @@ namespace ExpressForms.Filters
                     generator.Emit(OpCodes.Brtrue, lblNextProperty);
                     generator.EmitReturnFalse();
                     break;
-                case "Blank":
+                case "Doesn't Start With":
+                case "Doesn't Contain":
+                    // Check that the property is not null.  If it is null, then go on to the next property.
+                    generator.EmitGetPropertyValueFromArgument(property);
+                    generator.Emit(OpCodes.Brfalse, lblNextProperty);                    
+                    // Load the property of the argument and make it lower-case.
+                    generator.EmitGetPropertyValueFromArgument(property);
+                    generator.Emit(OpCodes.Callvirt, StringToLower);
+                    // Load the lower-cased search key and see if the lower-cased property starts with it.
+                    generator.Emit(OpCodes.Ldstr, filterText.ToLower());
+                    // We use either String.StartsWith or String.Contains according to what the user specified.
+                    generator.Emit(OpCodes.Callvirt, filterMode == "Starts With" ? StringStartsWith : StringContains);
+                    // Since we're doing the opposite of the "Starts With" and "Contains" cases, go to the next property
+                    // if the search key doesn't match, and return false otherwise.
+                    generator.Emit(OpCodes.Brfalse, lblNextProperty);
+                    generator.EmitReturnFalse();
+                    break;
+                case "Is Blank":
                     // Load the  property of the argument and see if it's null or whitespace
                     generator.EmitGetPropertyValueFromArgument(property);
                     generator.Emit(OpCodes.Call, StringIsNullOrWhiteSpace);
                     // If we didn't get back true, then return false; otherwise, go on to the next property.
                     generator.Emit(OpCodes.Brtrue, lblNextProperty);
+                    generator.EmitReturnFalse();
+                    break;
+                case "Isn't Blank":
+                    // Load the  property of the argument and see if it's null or whitespace
+                    generator.EmitGetPropertyValueFromArgument(property);
+                    generator.Emit(OpCodes.Call, StringIsNullOrWhiteSpace);
+                    // If we didn't get back false, then return false; otherwise, go on to the next property.
+                    generator.Emit(OpCodes.Brfalse, lblNextProperty);
                     generator.EmitReturnFalse();
                     break;
             }

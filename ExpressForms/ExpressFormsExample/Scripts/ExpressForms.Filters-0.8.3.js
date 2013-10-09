@@ -14,11 +14,14 @@
             switch (selectedValue) {
                 case "":
                 case "Blank":
+                case "Isn't Blank":
                     $input.css('display', 'none')
                         .val('');
                     break;
                 case 'Starts With':
+                case "Doesn't Start With":
                 case 'Contains':
+                case "Doesn't Contain":
                     $input.css('display', 'inline');
                     break;
             }
@@ -410,7 +413,7 @@
         $query = $thisFilter.find('input[type="text"]');
         fieldName = $query.attr('id');
         autocompleteMaxMatches = $query.attr('data-autocompletemaxmatches');
-        autocompleteUrl = $query.attr('data-autocompleteurl');
+        autocompleteUrl = $('#hdnGetIndexFilterAutocompleteDataUrl').val(); // $query.attr('data-autocompleteurl');
 
         $query.autocomplete({
             source: function (request, returnAutocompleteEntries) {

@@ -6,6 +6,10 @@ For Fast and Easy Creation of CRUD Pages
 
 ============
 
+ExpressForms-0.8.3 fixes a few bugs in the autocomplete for the text filter.
+
+***
+
 I haven't been updating this file regularly, so I missed a few minor revisions.
 ExpressForms-0.8.1, released October 7, 2013, fixes an issue where the ExpressFormsDropDownList doesn't default
 to the current value for a record.

@@ -303,8 +303,9 @@ namespace ExpressForms
 
             ExpressFormsIndexViewModel model = new ExpressFormsIndexViewModel()
             {                
-                Title = IndexTitle == null ? typeof(T).Name : IndexTitle,
+                Title = IndexTitle == null ? typeof(T).Name : IndexTitle,                
                 GetAjaxUrl = Url.Action("GetAjax", QueryStringUtility.CurrentQueryStringAsRouteValues), // pass the query string values in the URL in case they are needed to retrieve data.
+                GetIndexFilterAutocompleteDataUrl = Url.Action("GetIndexFilterAutocompleteData", QueryStringUtility.CurrentQueryStringAsRouteValues),
                 IndexHeader = indexHeader,
                 IndexRecords = indexRecords,
                 Filters = GetIndexFilters(),

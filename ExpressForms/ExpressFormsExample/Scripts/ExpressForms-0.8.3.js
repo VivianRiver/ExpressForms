@@ -136,7 +136,7 @@
     function setFilterCriteria(values) {
         var $filterElements, values;
         $filterElements = getFilterElements();
-        $filterElements.each(function () {            
+        $filterElements.each(function () {
             var $element, key;
             $element = $(this);
             key = $element.attr('data-filtername');
@@ -164,7 +164,7 @@
 
     // When an AJAX extension is present, call a method to redraw the table.
     // This should be used when the user edits the filtering criteria.
-    function redrawAjaxTable() {
+    function redrawAjaxTable() {        
         if (!ajaxExtension)
             throw new Error('Cannot redraw table without ajax extension present.');
         ajaxExtension.redrawTable($table);
@@ -179,7 +179,7 @@
             try {
                 filterCriteriaUrlEncoded = hashUrl.substring(2); // omit the leading "!#"
                 filterCriteriaJson = decodeURIComponent(filterCriteriaUrlEncoded);
-                filterCriteria = JSON.parse(filterCriteriaJson);                
+                filterCriteria = JSON.parse(filterCriteriaJson);
                 return filterCriteria;
             }
             catch (e) {
@@ -194,7 +194,7 @@
 
     // When an AJAX extension is present, set a URL containing the filter criterea each time the filter is changed.
     // Will omit filters than have the default criteria (to avoid unecessarily long URLs).
-    function setUrlFilter() {        
+    function setUrlFilter() {
         var filterCriteria, filterCriteriaJson, filterCriteriaUrlEncoded;
         filterCriteria = getFilterCriteria(true);
         filterCriteriaJson = JSON.stringify(filterCriteria);
