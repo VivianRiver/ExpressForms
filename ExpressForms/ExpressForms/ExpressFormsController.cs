@@ -25,11 +25,12 @@ namespace ExpressForms
             // Set default values to properties
             // I think that these should all be wrapped inside their respective properties so that we don't have to worry about the base constructor being invoked.
             IndexViewName = "ExpressFormsIndex";
+            ShowIndexAddNewButton = true;
             EditorViewName = "ExpressFormsEditor";
             CustomPropertyNames = new Dictionary<string, string>();
             CustomPropertyDisplay = new Dictionary<string, Func<T, string>>();
             CustomEditorInputs = new Dictionary<string, ExpressFormsInput>();
-            IgnoredPropertyNames = new string[] { };
+            IgnoredPropertyNames = new List<string>();
             DefaultIndexFilterAutocompleteMode = ExpressFormsIndexViewModel.DefaultIndexFilterAutocompleteModeEnum.Off;
             IndexFilterPlacement = ExpressFormsIndexViewModel.FilterPlacementEnum.None;
         }
@@ -237,10 +238,47 @@ namespace ExpressForms
         }        
         protected Dictionary<string, ExpressFormsInput> CustomEditorInputs { get; set; }
         
-        protected string IndexTitle { get; set; }        
+        protected string IndexTitle { get; set; }
+        protected bool ShowIndexAddNewButton { get; set; }
         protected Dictionary<string, string> CustomPropertyNames { get; set; }
-        protected IEnumerable<string> IgnoredPropertyNames { get; set; }
+        protected List<string> IgnoredPropertyNames { get; set; }
         protected Dictionary<string, Func<T, string>> CustomPropertyDisplay { get; set; }
+
+        // Writing the following definitions of DefaultEditButton, DefaultRemoveButton, and IndexButtons is cumbersome,
+        // but it has the advantage of providing developers with names to refer to the two default buttons without
+        // having to traverse the list of index buttons, and it provides default values for the button configurations
+        // that should work in most circumstances.
+        private ExpressFormsEditButton<T, TId> _defaultEditButton;
+        protected ExpressFormsEditButton<T, TId> DefaultEditButton
+        {
+            get
+            {
+                if (_defaultEditButton == null)
+                    _defaultEditButton = new ExpressForms.Buttons.ExpressFormsEditButton<T, TId>()
+                    {
+                        Text = "Edit",
+                    };
+                return _defaultEditButton;
+            }
+            set { _defaultEditButton = value; }
+        }
+        private ExpressFormsModifyDataButton<T, TId> _defaultRemoveButton;
+        protected ExpressFormsModifyDataButton<T,TId> DefaultRemoveButton
+        {
+            get
+            {
+                if (_defaultRemoveButton == null)
+                { _defaultRemoveButton=new ExpressForms.Buttons.ExpressFormsModifyDataButton<T, TId>() {
+                            Text = "Remove",                            
+                            TableIdForDeletion = typeof(T).Name,
+                            ActionType = ExpressForms.Buttons.ExpressFormsModifyDataButton<T, TId>.ActionTypeEnum.Delete,
+                            PostType = ExpressForms.Buttons.ExpressFormsModifyDataButton<T, TId>.PostTypeEnum.Ajax};
+                }
+                return _defaultRemoveButton;
+            }
+            set
+            { _defaultRemoveButton = value; }
+        }        
         private List<ExpressFormsButton<T, TId>> _indexButtons;
         protected List<ExpressFormsButton<T, TId>> IndexButtons
         {
@@ -251,17 +289,7 @@ namespace ExpressForms
                     _indexButtons =
                     new List<ExpressForms.Buttons.ExpressFormsButton<T, TId>>
                     {
-                        new ExpressForms.Buttons.ExpressFormsEditButton<T, TId>() {
-                            Text = "Edit",
-                            LinkUrl = Url.Action("EditExisting"),            
-                        },    
-                        new ExpressForms.Buttons.ExpressFormsModifyDataButton<T, TId>() {
-                            Text = "Remove",
-                            PostUrl = Url.Action("Postback"),
-                            TableIdForDeletion = typeof(T).Name,
-                            ActionType = ExpressForms.Buttons.ExpressFormsModifyDataButton<T, TId>.ActionTypeEnum.Delete,
-                            PostType = ExpressForms.Buttons.ExpressFormsModifyDataButton<T, TId>.PostTypeEnum.Ajax
-                        }
+                        DefaultEditButton, DefaultRemoveButton
                     };
                 }
                 return _indexButtons;
@@ -287,6 +315,7 @@ namespace ExpressForms
         /// <returns></returns>
         public virtual ActionResult Index()
         {
+            SetupIndex();
             string[] propertyNames = GetPropertyNames();
             string[] customColumnNames = GetPropertyColumnNames();
 
@@ -304,6 +333,7 @@ namespace ExpressForms
             ExpressFormsIndexViewModel model = new ExpressFormsIndexViewModel()
             {                
                 Title = IndexTitle == null ? typeof(T).Name : IndexTitle,                
+                ShowAddNewButton = ShowIndexAddNewButton,
                 GetAjaxUrl = Url.Action("GetAjax", QueryStringUtility.CurrentQueryStringAsRouteValues), // pass the query string values in the URL in case they are needed to retrieve data.
                 GetIndexFilterAutocompleteDataUrl = Url.Action("GetIndexFilterAutocompleteData", QueryStringUtility.CurrentQueryStringAsRouteValues),
                 IndexHeader = indexHeader,
@@ -323,6 +353,8 @@ namespace ExpressForms
         /// <returns></returns>
         public virtual ActionResult EditNew()
         {
+            SetupEditor();
+
             HtmlHelper helper = new HtmlHelper(new ViewContext(ControllerContext, new WebFormView(ControllerContext, "omg"), new ViewDataDictionary(), new TempDataDictionary(), new System.IO.StringWriter()), new ViewPage());
             bool isNew = true;
             T record = new T();
@@ -347,6 +379,8 @@ namespace ExpressForms
         /// <param name="id">the ID of the row to update; if null, the user may insert a new row.</param>        
         public virtual ActionResult EditExisting(TId id)
         {
+            SetupEditor();
+
             HtmlHelper helper = new HtmlHelper(new ViewContext(ControllerContext, new WebFormView(ControllerContext, "omg"), new ViewDataDictionary(), new TempDataDictionary(), new System.IO.StringWriter()), new ViewPage());
             bool isNew = false;
             T record = Exchange.Get(id);
@@ -452,7 +486,9 @@ namespace ExpressForms
 
         #region Ajax methods (require AJAX extension)
         public virtual ActionResult GetAjax()
-        {            
+        {
+            SetupIndex();
+
             HtmlHelper helper = new HtmlHelper(new ViewContext(ControllerContext, new WebFormView(ControllerContext, "omg"), new ViewDataDictionary(), new TempDataDictionary(), new System.IO.StringWriter()), new ViewPage());
 
             // Here, we need to use the property names from the class definition, not the column names that we display.
@@ -524,6 +560,16 @@ namespace ExpressForms
         #endregion
 
         #region helper methods
+
+        /// <summary>
+        /// When overridden in a derived class, this function runs whenever records are returned to the browser.
+        /// </summary>
+        protected virtual void SetupIndex() { }
+        /// <summary>
+        /// When overridden in a derived class, this function runs whenever an editor screen is sent to the browser.        
+        /// </summary>
+        protected virtual void SetupEditor() { }
+
         /// <summary>
         /// Get an array containing the property names as defined in the class.
         /// This function will check the names not to display, but will not use the custom column headers.

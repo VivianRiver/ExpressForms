@@ -24,6 +24,13 @@ namespace ExpressForms.Buttons
 
         public override MvcHtmlString WriteButton(HtmlHelper helper, object htmlAttributes)
         {
+            // Provide default value for LinkUrl in case it hasn't been specified.
+            if (string.IsNullOrWhiteSpace(LinkUrl))
+            {
+                UrlHelper Url = new UrlHelper(helper.ViewContext.RequestContext);
+                LinkUrl = Url.Action("EditExisting");
+            }
+
             // TODO: Use proper encoding.
             // Is there a class for this? (Yes, URL helper, but I don't want to pass it here because we don't want this to depend on that, or do we?)
             StringBuilder linkUrlSb = new StringBuilder();

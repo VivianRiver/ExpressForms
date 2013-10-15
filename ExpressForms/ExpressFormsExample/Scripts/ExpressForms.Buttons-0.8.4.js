@@ -22,14 +22,20 @@
     } // end ExpressFormsEditButton_click
 
     function ExpressFormsModifyDataButton_click() {
-        var $button, formName, postUrl, actionType, postType, idForDeletion, tableIdForDeletion, values;
+        var $button, confirmationMessage, formName, postUrl, actionType, postType, idForDeletion, tableIdForDeletion, values;
         $button = $(this);
-        formName = $(this).attr('data-formname');
-        postUrl = $(this).attr('data-posturl');
-        postType = $(this).attr('data-posttype');
-        actionType = $(this).attr('data-actiontype');
-        idForDeletion = $(this).attr('data-id'); // only used for deletion
-        tableIdForDeletion = $(this).attr('data-tableid'); // only used for deletion
+
+        // If a confirmation message is supplied, show it; then cancel this operation if the user clicks [Cancel].
+        confirmationMessage = $button.attr('data-message');
+        if (confirmationMessage && !confirm(confirmationMessage))
+            return;
+
+        formName = $button.attr('data-formname');
+        postUrl = $button.attr('data-posturl');
+        postType = $button.attr('data-posttype');
+        actionType = $button.attr('data-actiontype');
+        idForDeletion = $button.attr('data-id'); // only used for deletion
+        tableIdForDeletion = $button.attr('data-tableid'); // only used for deletion
 
         if (actionType.toUpperCase() === 'DELETE') {
             // The delete button has a data-id attribute that tells which record to delete.  The others read the record from a form.
@@ -65,7 +71,7 @@
                         $button.attr('data-actiontype', 'UPDATE');
                         values.Id = response.Id;
                         window.ef.writeToForm(formName, values);
-                    } else if (isDelete) {                        
+                    } else if (isDelete) {
                         // Upon a successful deletion, remove the deleted row from the display.
                         var $table, $rowToDelete;
 

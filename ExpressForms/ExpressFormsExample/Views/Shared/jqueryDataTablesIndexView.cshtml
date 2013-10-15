@@ -34,9 +34,12 @@
     Html.RenderPartial("ExpressFormsFilterPartial", new ExpressForms.ExpressFormsFilterModel() { Filters = Model.Filters });
 }
 
-<p>
-    @Html.ActionLink("Add New", "EditNew")
-</p>
+@if (Model.ShowAddNewButton)
+{
+    <p>
+        @Html.ActionLink("Add New", "EditNew")
+    </p>
+}
 
 <div class='ExpressFormsTableContainer'>
     @Html.WriteStaticTable(Model.Title, Model.IndexHeader, new ExpressForms.ExpressFormsIndexRecord[] { } /* print no records until they are fetched using ajax */)

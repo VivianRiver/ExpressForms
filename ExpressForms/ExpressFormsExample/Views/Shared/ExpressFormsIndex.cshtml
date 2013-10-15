@@ -10,8 +10,12 @@
     @Model.Title
 </h1>
 
-<p>
-    @Html.ActionLink("Add New", "EditNew")
-</p>
+@if (Model.ShowAddNewButton)
+{
+    <p>
+        @Html.ActionLink("Add New", "EditNew")
+    </p>
+}
+    
 
-@Html.WriteStaticTable(Model.Title, Model.IndexHeader, Model.IndexRecords)
+@Html.WriteStaticTable(Model.Title, Model.IndexHeader, Model.IndexRecords)  

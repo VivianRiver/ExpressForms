@@ -9,7 +9,12 @@ namespace ExpressForms
     public class ExpressFormsIndexViewModel
     {        
         public string Title { get; set; }
-        
+
+        /// <summary>
+        /// Tells whether or not to show the "Add New" button on the page.
+        /// </summary>
+        public bool ShowAddNewButton { get; set; }
+
         /// <summary>
         /// The URL from which to load the table data using AJAX
         /// </summary>

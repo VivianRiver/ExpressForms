@@ -14,8 +14,8 @@ namespace ExpressForms.Entities
     {
         public EntityController()
             : base()
-        {            
-            IgnoredPropertyNames = new[] { "EntityState", "EntityKey" };            
+        {
+            IgnoredPropertyNames.AddRange(new[] { "EntityState", "EntityKey" });
         }
 
         protected void Initialize(ObjectContext objectContext)

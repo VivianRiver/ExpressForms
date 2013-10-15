@@ -1,0 +1,18 @@
+﻿
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	modified:   ExpressForms/ExpressForms.Entities/EntityController.cs
+#	modified:   ExpressForms/ExpressForms/Buttons/ExpressFormsEditButton.cs
+#	modified:   ExpressForms/ExpressForms/Buttons/ExpressFormsModifyDataButton.cs
+#	modified:   ExpressForms/ExpressForms/ExpressFormsController.cs
+#	modified:   ExpressForms/ExpressForms/ExpressFormsIndexViewModel.cs
+#	renamed:    ExpressForms/ExpressFormsExample/Scripts/ExpressForms.Buttons-0.8.3.js -> ExpressForms/ExpressFormsExample/Scripts/ExpressForms.Buttons-0.8.4.js
+#	modified:   ExpressForms/ExpressFormsExample/Views/Shared/ExpressFormsIndex.cshtml
+#	modified:   ExpressForms/ExpressFormsExample/Views/Shared/jqueryDataTablesIndexView.cshtml
+#	modified:   ExpressForms/ExpressFormsExample/Web.config
+#
+

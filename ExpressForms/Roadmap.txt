@@ -1,3 +1,24 @@
+ExpressForms-0.8.4 adds several features.
+First of all, the ExpressFormsController now implements two virtual methods, SetupIndex and SetupEditor
+that when overridden, allow developers to specify configuration that is specifically for Index or Editor
+without having to override the Index or EditNew methods.
+
+It is now possible to refer to IndexButtons in constructor methods in classes that inherit ExpressFormsController.
+
+The IgnoredPropertyNames object has been changed from an array of strings to a list of strings so that
+developers can call List methods on it like "Add", "AddRange", and "Clear".
+
+There is now functionality to display a warning message before removing a record.
+It works as shown below:
+
+DefaultRemoveButton.GetConfirmationMessageFromRecord = (record, id) => "Are you sure you want to remove " + xslt.Name + "?";
+
+Also, there are two new object references: DefaultRemoveButton and DefaultEditButton that refer to the two default
+buttons on the ExpressFormsController object.  These two buttons are still placed in the IndexButtons object,
+but these two object references make it easy to refer to them.
+
+***
+
 ExpressForms-0.8.3 fixes a few bugs in the autocomplete for the text filter.
 
 ***
