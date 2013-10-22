@@ -6,6 +6,14 @@ For Fast and Easy Creation of CRUD Pages
 
 ============
 
+ExpressForms-0.8.5 adds a small one-line function to the ExpressForms global ef object to allow
+for the table object to be retrieved.
+
+This was needed for an application that needed to know how many rows were in the table, but I think
+that in the future, I need to create some sort of event system that can be customized.
+
+***
+
 ExpressForms-0.8.4 adds several features.
 First of all, the ExpressFormsController now implements two virtual methods, SetupIndex and SetupEditor
 that when overridden, allow developers to specify configuration that is specifically for Index or Editor

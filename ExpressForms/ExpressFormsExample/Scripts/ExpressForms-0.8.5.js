@@ -98,6 +98,10 @@
         }
     }
 
+    function getTable() {
+        return $table;
+    }
+
     function filterCriteriaChanged() {
         redrawAjaxTable();
         setUrlFilter();
@@ -164,7 +168,7 @@
 
     // When an AJAX extension is present, call a method to redraw the table.
     // This should be used when the user edits the filtering criteria.
-    function redrawAjaxTable() {        
+    function redrawAjaxTable() {
         if (!ajaxExtension)
             throw new Error('Cannot redraw table without ajax extension present.');
         ajaxExtension.redrawTable($table);
@@ -255,6 +259,7 @@
         readFromForm: readFromForm,
         writeToForm: writeToForm,
         resetButtonHandlers: resetButtonHandlers,
+        getTable: getTable,
         getUrlFilter: getUrlFilter,
         setUrlFilter: setUrlFilter,
         filterCriteriaChanged: filterCriteriaChanged,
