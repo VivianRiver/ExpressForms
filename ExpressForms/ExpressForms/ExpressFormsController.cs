@@ -113,10 +113,9 @@ namespace ExpressForms
                         };
                         break;
                     default:
-                        filter = new ExpressFormsFilterText()
+                        filter = new ExpressFormsPassThruFilter()
                         {
-                            FilterName = property.Name,
-                            PartialViewName = "ExpressFormsFilters/NoFilterAvailable"
+                            FilterName = property.Name,                            
                         };
                         break;
                 }

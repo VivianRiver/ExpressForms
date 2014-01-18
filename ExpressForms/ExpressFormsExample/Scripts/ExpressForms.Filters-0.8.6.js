@@ -367,6 +367,21 @@
         };
     })(); // end ExpressFormsFilterBool
 
+    // ExpressFormsPassThruFilter
+    filters['ExpressFormsPassThruFilter'] = (function () {
+        return {
+            name: 'ExpressFormsPassThruFilter',
+            setupDom: function () { },
+            getValue: function ($element) {                
+                return { };            
+            },
+            getDefaultValue: function ($element) {
+                return { };
+            },
+            setValue: function ($element, value) { }
+        };
+    })(); // end ExpressFormsFilterBool
+
     // Register the filters with Express Forms.
     for (x in filters) {
         window.ef.registerFilter(filters[x]);

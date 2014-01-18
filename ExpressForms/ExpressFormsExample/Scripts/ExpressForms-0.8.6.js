@@ -111,7 +111,7 @@
     // It is expected that this function will be called by an AJAX extension to send the filter criteria to the server.
     // When supressDefaultValues is true, only filters with non-default values will be returned.
     // This is so that a smaller object can be saved to the URL without including filters that the user hasn't set.
-    function getFilterCriteria(supressDefaultValues) {
+    function getFilterCriteria(supressDefaultValues) {        
         var $filterElements, values;
         $filterElements = getFilterElements();
         values = {};

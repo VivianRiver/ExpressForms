@@ -24,7 +24,7 @@
     function ExpressFormsModifyDataButton_click() {
         var $button, confirmationMessage, formName, postUrl, actionType, postType, idForDeletion, tableIdForDeletion, values;
         $button = $(this);
-
+        
         // If a confirmation message is supplied, show it; then cancel this operation if the user clicks [Cancel].
         confirmationMessage = $button.attr('data-message');
         if (confirmationMessage && !confirm(confirmationMessage))

@@ -58,6 +58,7 @@
     <Compile Include="Filters\ExpressFormsFilter.cs" />
     <Compile Include="Filters\ExpressFormsFilterNumber.cs" />
     <Compile Include="Filters\ExpressFormsFilterText.cs" />
+    <Compile Include="Filters\ExpressFormsPassThruFilter.cs" />
     <Compile Include="Filters\IlGeneratorExtensions.cs" />
     <Compile Include="IndexAjaxExtension\ExpressFormsIndexAjaxExtension.cs" />
     <Compile Include="ExpressFormsIndexHeader.cs" />
