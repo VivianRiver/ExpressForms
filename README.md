@@ -6,6 +6,11 @@ For Fast and Easy Creation of CRUD Pages
 
 ============
 
+ExpressForms-0.8.7 is a minor bugfix release.  It fixes an error where having a GUID column in
+the data populating the tables causes the filtering functionality to not work.
+
+============
+
 ExpressForms-0.8.5 adds a small one-line function to the ExpressForms global ef object to allow
 for the table object to be retrieved.
 

@@ -372,11 +372,15 @@
         return {
             name: 'ExpressFormsPassThruFilter',
             setupDom: function () { },
-            getValue: function ($element) {                
-                return { };            
+            getValue: function ($element) {
+                return {
+                    isDefaultValue: function () { return true; }
+                };
             },
             getDefaultValue: function ($element) {
-                return { };
+                return {
+                    isDefaultValue: function () { return true; }
+                };
             },
             setValue: function ($element, value) { }
         };

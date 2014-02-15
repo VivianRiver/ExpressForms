@@ -56,12 +56,6 @@
     <Compile Include="ExpressFormsDataTablesIndexAjaxExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ExpressForms\ExpressForms.csproj">
-      <Project>{87EAB8EC-FC54-4EC5-9D0A-A2FAF3C2412B}</Project>
-      <Name>ExpressForms</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
